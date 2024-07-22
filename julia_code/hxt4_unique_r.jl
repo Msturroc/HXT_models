@@ -561,7 +561,7 @@ end
 
 using BlackBoxOptim
 for i in 935:1000
-    pars1 = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    pars1 = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
     pars1[35] = log10(1.175)
     @show rho_lens(pars1) 
     x0=pars1
