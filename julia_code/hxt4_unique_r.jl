@@ -32,7 +32,6 @@ end
 
 function mig2ko(params)
     pars = copy(params)
-    #pars[45] = -(pars[25]*pars[40])
     pars[46] = 0.0
     return collect(pars)
 end	
@@ -52,9 +51,7 @@ end
 
 function snf3ko(params)
     pars = copy(params)
-    #pars = 10 .^ (pars)
     pars[10] = - pars[43] #0.0 #thsnf3
-    #pars[43] = 0.0 #estd1max3
     return collect(pars)
 end
 
@@ -98,7 +95,6 @@ function ss1(h0,p)
             kmth1mig2 = p[15];# [16]
             nmth1mig2 = p[16]; # [17]
             dmig2 = p[25]; # [26]
-            #smig2 = p[27]; # [27]
             kmig2std1 = p[26];# [28]
             nmig2std1 = p[27];# [29]
             kmig2mth1 = p[28]; # [30]
@@ -109,9 +105,6 @@ function ss1(h0,p)
             Mig2 = u[1] 
             Mth1 = u[2] 
 
-            #kmig2std1 = (10^(-al_std1))*ksnf1std1
-            # parameter thmth1 replaces smth1 - imposes Mth1 is usually greater than Std1
-            #std1tot = khxt4std1 + thstd1
             smth1= dmth1*(std1tot + thmth1)
             dmig2g = dmig2 * 10^thmig2 
             
@@ -139,7 +132,6 @@ function ss1(h0,p)
             kmig1snf1 = p[23];# [24]
             theta2 = p[24];# [25]
             dmig2 = p[25];# [26]
-            #smig2 = p[27];# [29]
             kmig2std1 = p[26];# [30]
             nmig2std1 = p[27];# [31]
             kmig2mth1 = p[28];# [32]
@@ -152,13 +144,9 @@ function ss1(h0,p)
             Mig2 = u[2] 
             Mth1 = u[3] 
 
-            #kmig2std1 = (10^(-al_std1))*ksnf1std1
-
             # parameter thmth1 replaces smth1 - imposes Mth1 is usually greater than Std1 
-            #std1tot = khxt4std1 + thstd1
             smth1= dmth1*(std1tot + thmth1)
             emig1max = (10^theta2)*imig1
-            #smig2 = dmig2 * khxt4mig2 + thmig2
             dmig2g = dmig2 * 10^thmig2 
 
             Std1 = std1tot
@@ -246,24 +234,18 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
             y[6] = g
             y[7] = ig
 
-            #kmig2std1 = (10^(-al_std1))*ksnf1std1
-
             if istd1 == 0.0
                 std1tot = 0.0
             else
-                #std1tot = khxt4std1 + thstd1
                 std1tot = kmig2std1 + thstd1
             end
-            # if std1tot > 1
-            #     error()
-            # end
+
             smth1= dmth1*(std1tot + thmth1)
 
             k2= k3 + thk
             estd1max2= dmth1rgt2+ thrgt2
             dmth1snf3= estd1max3 + thsnf3
             emig1max = (10^theta2)*imig1
-            #smig2 = dmig2 * khxt4mig2 + thmig2
             dmig2g = dmig2 * 10^thmig2 
 
             khxt4mth1 = (smth1/dmth1)*exp(-th)
@@ -291,11 +273,21 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
             end
             
             if smth1 !== 0.0
-                #if smth1 > 10^0 || smth1 < 10^(-2)
                 if smth1 < 10^(-2) || smth1 > 10^2
                     error()
                 end
             end
+
+            if std1tot !== 0.0
+                if std1tot > 1 
+                    error()
+                end
+            end
+
+            if smth1/dmth1 > 10.0
+                error()
+            end
+
 
             Snf1 = (1 + Std1 / ksnf1std1)^nsnf1 / ((1 + Std1 / ksnf1std1)^nsnf1 + ell*(1 + ig / ksnf1)^nsnf2)
             if smth1 == 0 
@@ -310,8 +302,6 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
             dydt[6] = 0.0
             dydt[7] = 0.0
         end
-
-    # OUTPUTING A FUNCTION THAT GENERATES A PROBLEM AS A FUNCTION OF ONLY PARAMETERS.
 
     prob1(params) = ODEProblem(model, ss1(h0,[j for j in genotype(params)]), t, [j for j in genotype(params)])
     
@@ -400,7 +390,6 @@ function trysolve(prob, pars, datamean, datasem,times) # main function to solve 
     try
         sol = solve(prob(pars), TRBDF2(), saveat = times,tstops=times, verbose = false, abstol = atol, reltol = rtol, dtmin = 1e-12,maxiters=1e6)
         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])]
-        #lsqval = mean((arr[1] - datamean).^2 ./ datasem.^2) #+ 1*(1/(maximum(sol.u[2]/pars[43])) + 1/(maximum(sol.u[3]/pars[44])) + 1/(maximum(sol.u[4]/pars[38])) + 1/(maximum(sol.u[5]/pars[40])))
         lsqval = mean(((arr[1] - datamean).^2 ./ mean(datamean)))
         return lsqval, arr[4], arr[5]
     catch
@@ -452,7 +441,7 @@ custombounds101 =
 (log10(1.0), log10(5.0)), # nmth1rgt2 9
 (-4.0,2.0), # dmth1snf3 10
 (-4.0,2.0), # dmth1rgt2 11
-(-2.0, 1.0), # smth1 12
+(-2.0, 2.0), # thmth1 12
 (-4.0,4.0), # kmig1mth1 13
 (log10(1.0), log10(5.0)), # nmig1mth1 14
 (-4.0,4.0), # kmig2mth1 15
@@ -572,7 +561,6 @@ end
 
 using BlackBoxOptim
 for i in 935:1000
-    #pars = [(custombounds101[i][2]+custombounds101[i][1])/2 for i in 1:length(custombounds101)]
     pars1 = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
     pars1[35] = log10(1.175)
     @show rho_lens(pars1) 
@@ -638,7 +626,6 @@ for i in 935:1000
                  push!(out,ones(length(tpoints[jj])))
         else   
             sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-            #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
             arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][1]
             push!(out,arr)
         end
