@@ -1,0 +1,101 @@
+###
+# SNF1
+###
+parameter snf1tot
+parameter nsnf1
+parameter ksnf1std1
+parameter ksnf1
+parameter msnf1
+parameter ell
+variable snf1= snf1tot*(1 + std1/ksnf1std1)**nsnf1/((1 + std1/ksnf1std1)**nsnf1 + ell*(1 + g/ksnf1)**msnf1)
+
+###
+# Hxt4
+###
+parameter shxt4
+parameter khxt4mig1
+parameter nhxt4mig1
+parameter khxt4mig2
+parameter nhxt4mig2
+parameter khxt4mth1
+parameter nhxt4mth1
+parameter khxt4std1
+parameter nhxt4std1
+parameter dhxt4
+parameter dhxt4g
+parameter kdhxt4
+parameter mdhxt4
+
+null => hxt4 ; shxt4/(1 + (mig1/khxt4mig1)**nhxt4mig1 + (mig2/khxt4mig2)**nhxt4mig2 + (mth1/khxt4mth1)**nhxt4mth1 + (std1/khxt4std1)**nhxt4std1)
+hxt4 -> null ; dhxt4
+hxt4 => null ; dhxt4g/(1 + (g/kdhxt4)**mdhxt4)*hxt4
+
+###
+# nuclear Mig1
+###
+parameter emig1
+parameter kmig1snf1
+parameter imig1
+parameter mig1tot
+mig1 => null ; emig1*snf1*mig1/(kmig1snf1 + mig1)
+null => mig1 ; imig1*(mig1tot - mig1)
+
+
+###
+# Mig2
+###
+parameter kmig2mth1
+parameter nmig2mth1
+parameter kmig2std1
+parameter nmig2std1
+parameter dmig2
+parameter dmig2snf1
+parameter kmig2snf1
+
+null => mig2 ; smig2/(1 + (mth1/kmig2mth1)**nmig2mth1 + (std1/kmig2std1)**nmig2std1)
+mig2 -> null ; dmig2
+mig2 => null ; dmig2snf1*snf1*mig2/(kmig2snf1 + mig2)
+
+
+
+###
+# Mth1
+###
+parameter smth1
+parameter kmth1mig1
+parameter nmth1mig1
+parameter kmth1mig2
+parameter nmth1mig2
+parameter dmth1
+parameter dmth1snf3
+parameter mmth1snf3
+parameter k3
+parameter dmth1rgt2
+parameter mmth1rgt2
+parameter k2
+
+null => mth1 ; smth1/(1 + (mig1/kmth1mig1)**nmth1mig1 + (mig2/kmth1mig2)**nmth1mig2)
+mth1 -> null ; dmth1
+mth1 => null ; dmth1snf3*g**mmth1snf3*mth1/(k3**mmth1snf3 + g**mmth1snf3)
+mth1 => null ; dmth1rgt2*g**mmth1rgt2*mth1/(k2**mmth1rgt2 + g**mmth1rgt2)
+
+
+
+###
+# nuclear Std1
+###
+parameter estd1snf3
+parameter mstd1snf3
+parameter estd1rgt2
+parameter mstd1rgt2
+parameter istd1
+parameter std1tot
+
+std1 => null ; estd1snf3*g**mstd1snf3*std1/(k3**mstd1snf3 + g**mstd1snf3)
+std1 => null ; estd1rgt2*g**mstd1rgt2*std1/(k2**mstd1rgt2 + g**mstd1rgt2)
+null => std1 ; istd1*(std1tot - std1)
+
+
+
+# initial conditions
+mig1= 1
