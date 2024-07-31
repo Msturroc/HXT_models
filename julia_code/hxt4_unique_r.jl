@@ -671,6 +671,27 @@ for i in 935:1000
     savefig("repression_midpoint_$(i)_raw.png")
 end
 
+# Read all parameter sets and calculate their scores
+particles = []
+for i in 935:1000   
+    pars1 = readdlm("potential_particles/int_g_midpoint_parameters_$i.txt")[:,1]
+    score = rho_lens(pars1)
+    push!(particles, (pars1, score, i))
+end
+
+# Sort particles by score (ascending order)
+sort!(particles, by = x -> x[2])
+
+# Keep only the best 20 particles
+best_particles = particles[1:min(20, length(particles))]
+
+# Save the best particles
+for (j, (params, score, i)) in enumerate(best_particles)
+    writedlm("best_particles/$i.txt", params)
+    println("Saved particle $i with score $score")
+end
+
+
 errors=[]
 for i in 245:273
     pars = readdlm("int_g_midpoint_parameters_$i.txt")[:,1]
