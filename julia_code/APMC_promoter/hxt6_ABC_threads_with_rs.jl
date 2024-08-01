@@ -1217,7 +1217,10 @@ model_lens15 = [Uniform(p[1], p[2]) for p in custombounds15]
 
 np = 20000
 
+include("types.jl")
+include("functions.jl")
 include("updated_abc_model_comparison_threads.jl")
+
 
 for ii = 1:10
     apmc_output = APMC(np, [model_lens8,model_lens9,model_lens10,model_lens11,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens8,rho_lens9,rho_lens10,rho_lens11,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Normal",n=2.0)
