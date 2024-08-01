@@ -282,6 +282,16 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
                 end
             end
 
+            if std1tot !== 0.0
+                if std1tot > 1 
+                    error()
+                end
+            end
+
+            if smth1/dmth1 > 10.0
+                error()
+            end
+
             Snf1 = (1 + Std1 / ksnf1std1)^nsnf1 / ((1 + Std1 / ksnf1std1)^nsnf1 + ell*(1 + ig / ksnf1)^nsnf2)
             if nhxt4mig2 == 1e10 && nhxt4std1 == 1e10
                 dydt[1] = +(shxt4 / (1 + (Mth1 / khxt4mth1)^nhxt4mth1 + (Mig1 / khxt4mig1)^nhxt4mig1)) - dhxt4 * Hxt4 - (dhxt4max * Hxt4) / (1 + (ig / kdhxt4)^ndhxt4) 
@@ -385,7 +395,7 @@ end
 
 function rho_lens15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -432,7 +442,7 @@ end
 
 function rho_lens14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig2 - should be 40?
     problems =[]
@@ -479,7 +489,7 @@ end
 
 function rho_lens13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -525,7 +535,7 @@ end
 
 function rho_lens12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -572,7 +582,7 @@ end
 
 function rho_lens11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -619,7 +629,7 @@ end
 
 function rho_lens10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -667,7 +677,7 @@ end
 
 function rho_lens9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -714,7 +724,7 @@ end
 
 function rho_lens8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -762,7 +772,7 @@ end
 
 function rho_lens7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[35] = -10^10
     problems =[]
@@ -809,7 +819,7 @@ end
 
 function rho_lens6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -857,7 +867,7 @@ end
 
 function rho_lens5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[35] = -10^10
     problems =[]
@@ -904,7 +914,7 @@ end
 
 function rho_lens4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -952,7 +962,7 @@ end
 
 function rho_lens3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -999,7 +1009,7 @@ end
 
 function rho_lens2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1047,7 +1057,7 @@ end
 
 function rho_lens1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1105,7 +1115,7 @@ custombounds101 =
 (log10(1.0), log10(5.0)), # nmth1rgt2 9
 (-4.0,2.0), # dmth1snf3 10
 (-4.0,2.0), # dmth1rgt2 11
-(-2.0, 1.0), # smth1 12
+(-2.0, 2.0), # thmth1 12
 (-4.0,4.0), # kmig1mth1 13
 (log10(1.0), log10(5.0)), # nmig1mth1 14
 (-4.0,4.0), # kmig2mth1 15
@@ -1267,7 +1277,7 @@ win_pts = readdlm("HXT6_846_2k/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -1307,7 +1317,7 @@ end
 
 function model14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig2 - should be 40?
     problems =[]
@@ -1348,7 +1358,7 @@ end
 
 function model13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -1388,7 +1398,7 @@ end
 
 function model12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -1429,7 +1439,7 @@ end
 
 function model11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -1470,7 +1480,7 @@ end
 
 function model10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1512,7 +1522,7 @@ end
 
 function model9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -1553,7 +1563,7 @@ end
 
 function model8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -1595,7 +1605,7 @@ end
 
 function model7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[35] = -10^10
     problems =[]
@@ -1636,7 +1646,7 @@ end
 
 function model6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -1678,7 +1688,7 @@ end
 
 function model5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[35] = -10^10
     problems =[]
@@ -1719,7 +1729,7 @@ end
 
 function model4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -1761,7 +1771,7 @@ end
 
 function model3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1802,7 +1812,7 @@ end
 
 function model2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1844,7 +1854,7 @@ end
 
 function model1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
