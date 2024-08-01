@@ -1217,8 +1217,6 @@ model_lens15 = [Uniform(p[1], p[2]) for p in custombounds15]
 
 np = 20000
 
-include("types.jl")
-include("functions.jl")
 include("updated_abc_model_comparison_threads.jl")
 
 for ii = 1:10
