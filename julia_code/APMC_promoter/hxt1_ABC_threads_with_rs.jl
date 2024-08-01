@@ -1224,11 +1224,11 @@ include("updated_abc_model_comparison_threads.jl")
 for ii = 1:10
     apmc_output = APMC(np, [model_lens4,model_lens5,model_lens6,model_lens7,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens4,rho_lens5,rho_lens6,rho_lens7,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
-    writedlm("hxt1_846/p_$(ii).txt", apmc_output.p)
-    writedlm("hxt1_846/e_$(ii).txt", apmc_output.epsilon)
+    writedlm("hxt1_955/p_$(ii).txt", apmc_output.p)
+    writedlm("hxt1_955/e_$(ii).txt", apmc_output.epsilon)
     for jj in 1:8
-        writedlm("hxt1_846/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
-        writedlm("hxt1_846/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
+        writedlm("hxt1_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
+        writedlm("hxt1_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
     end
 end
 
@@ -1241,9 +1241,9 @@ final_e1 = zeros(10)
 
 for i = [1]
     for j = 1:10
-        p = readdlm("hxt$(i)_846/p_$j.txt")
+        p = readdlm("hxt$(i)_955/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("hxt$(i)_846/e_$j.txt")
+        e = readdlm("hxt$(i)_955/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
@@ -1268,12 +1268,12 @@ end
 using Plots
 # ii=findmin(final_e1)[2]
 # win=findmax(final_p1[:,ii])[2]
-# win_pts = readdlm("hxt1_846/pts_$(ii)_$win.txt")[:,end]
+# win_pts = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
 
 win=findmax(mean(final_p1,dims=2))[2][1]
 is=findall(final_p1[win,:] .> 0.5)
 ii = findmin(final_e1[is])[2]
-win_pts = readdlm("hxt1_846/pts_$(ii)_$win.txt")[:,end]
+win_pts = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
     pars = copy(d2)
@@ -1911,7 +1911,7 @@ p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
 p4=plot(tpoints[4],sols[4])
 p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
 plot(p1,p2,p3,p4,layout=(2,2))
-savefig("winning_model_$(win)_sample_solution_HXT1_846.png")
+savefig("winning_model_$(win)_sample_solution_HXT1_955.png")
 
 # bar(apmc_output.p[:,end],xlabel="model",ylabel="final probability")
 # savefig("final_model_probabilities_HXT1.png")
