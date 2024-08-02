@@ -433,8 +433,8 @@ function rho_lens15(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -480,8 +480,8 @@ function rho_lens14(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -526,8 +526,8 @@ function rho_lens13(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -573,8 +573,8 @@ function rho_lens12(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -620,8 +620,8 @@ function rho_lens11(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -668,8 +668,8 @@ function rho_lens10(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -715,8 +715,8 @@ function rho_lens9(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -763,8 +763,8 @@ function rho_lens8(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -810,8 +810,8 @@ function rho_lens7(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -858,8 +858,8 @@ function rho_lens6(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -905,8 +905,8 @@ function rho_lens5(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -953,8 +953,8 @@ function rho_lens4(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1000,8 +1000,8 @@ function rho_lens3(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1048,8 +1048,8 @@ function rho_lens2(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1095,8 +1095,8 @@ function rho_lens1(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
