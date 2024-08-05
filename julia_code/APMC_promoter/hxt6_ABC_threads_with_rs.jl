@@ -411,7 +411,7 @@ function rho_lens15(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -458,7 +458,7 @@ function rho_lens14(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -504,7 +504,7 @@ function rho_lens13(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -551,7 +551,7 @@ function rho_lens12(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -598,7 +598,7 @@ function rho_lens11(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -646,7 +646,7 @@ function rho_lens10(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -693,7 +693,7 @@ function rho_lens9(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -741,7 +741,7 @@ function rho_lens8(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -788,7 +788,7 @@ function rho_lens7(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -836,7 +836,7 @@ function rho_lens6(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -883,7 +883,7 @@ function rho_lens5(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -931,7 +931,7 @@ function rho_lens4(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -978,7 +978,7 @@ function rho_lens3(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1026,7 +1026,7 @@ function rho_lens2(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1073,7 +1073,7 @@ function rho_lens1(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1138,7 +1138,7 @@ custombounds101 =
 (-4.0,4.0), # kdhxt4 32, 3
 (log10(1.0), log10(5.0)), # ndhxt4 33, 4
 (-2.0,2.0), # shxt4 34, 5
-(-4.0,4.0), # khxt4mth1 35, 6
+(-10.0,log10(3.0)), #th khxt4mth1 35, 6
 (log10(1.0), log10(5.0)), # nhxt4mth1 36, 7
 (-4.0,4.0),  #khxt4std1 37, 8
 (log10(1.0), log10(5.0)), # nhxt4std1 38, 9
@@ -1223,13 +1223,13 @@ include("updated_abc_model_comparison_threads.jl")
 
 
 for ii = 1:10
-    apmc_output = APMC(np, [model_lens8,model_lens9,model_lens10,model_lens11,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens8,rho_lens9,rho_lens10,rho_lens11,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Normal",n=2.0)
+    apmc_output = APMC(np, [model_lens8,model_lens9,model_lens10,model_lens11,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens8,rho_lens9,rho_lens10,rho_lens11,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
-    writedlm("HXT6_955/p_$(ii).txt", apmc_output.p)
-    writedlm("HXT6_955/e_$(ii).txt", apmc_output.epsilon)
+    writedlm("hxt6_955/p_$(ii).txt", apmc_output.p)
+    writedlm("hxt6_955/e_$(ii).txt", apmc_output.epsilon)
     for jj in 1:8
-        writedlm("HXT6_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
-        writedlm("HXT6_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
+        writedlm("hxt6_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
+        writedlm("hxt6_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
     end
 end
 
@@ -1242,9 +1242,9 @@ final_e6 = zeros(10)
 
 for i = [6]
     for j = 1:10
-        p = readdlm("HXT$(i)_955/p_$j.txt")
+        p = readdlm("hxt$(i)_955/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("HXT$(i)_955/e_$j.txt")
+        e = readdlm("hxt$(i)_955/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
@@ -1274,7 +1274,7 @@ using Plots
 win=findmax(mean(final_p6,dims=2))[2][1]
 is=findall(final_p6[win,:] .> 0.5)
 ii = findmin(final_e6[is])[2]
-win_pts = readdlm("HXT6_955_2k/pts_$(ii)_$win.txt")[:,end]
+win_pts = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
     pars = copy(d2)
@@ -1294,7 +1294,7 @@ function model15(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1334,7 +1334,7 @@ function model14(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1374,7 +1374,7 @@ function model13(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1415,7 +1415,7 @@ function model12(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1456,7 +1456,7 @@ function model11(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1498,7 +1498,7 @@ function model10(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1539,7 +1539,7 @@ function model9(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1581,7 +1581,7 @@ function model8(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1622,7 +1622,7 @@ function model7(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1664,7 +1664,7 @@ function model6(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1705,7 +1705,7 @@ function model5(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1747,7 +1747,7 @@ function model4(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1788,7 +1788,7 @@ function model3(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1830,7 +1830,7 @@ function model2(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1871,7 +1871,7 @@ function model1(d2)
                 temp_data6 = temp_data3[!, [1,3]]
                 times = temp_data3[!,:time]
                 fluor = temp_data4[!,:signal_value]
-                if h =="HXT1_GFP"
+                if h =="HXT6_GFP"
                     count = count + 1
                     if minimum(times) !== 0.0
                         glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
@@ -1907,7 +1907,7 @@ p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
 p4=plot(tpoints[4],sols[4])
 p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
 plot(p1,p2,p3,p4,layout=(2,2))
-savefig("winning_model_$(win)_sample_solution_HXT6_955_2k.png")
+savefig("winning_model_$(win)_sample_solution_HXT6_955.png")
 
 # bar(apmc_output.p[:,end],xlabel="model",ylabel="final probability")
 # savefig("final_model_probabilities_HXT6.png")
