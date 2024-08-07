@@ -1917,3 +1917,48 @@ savefig("winning_model_$(win)_sample_solution_HXT1_955.png")
 # savefig("final_model_probabilities_HXT1.png")
 
 #sols = trysolve2.(problems, [pars], fluorescence,fluorescence_sem,tpoints)
+
+
+final_p1 = zeros(8,10)
+final_e1 = zeros(10)
+
+for j = 1:10
+    p = readdlm("hxt1_955/p_$j.txt")
+    eval(Meta.parse("final_p1"))[:,j] = p[:,end]
+    e = readdlm("hxt1_955/e_$j.txt")
+    eval(Meta.parse("final_e1"))[j] = e[end]
+end
+writedlm("final_p1.txt",final_p1)
+writedlm("final_e1.txt",final_e1)
+
+
+win=findmax(mean(final_p1,dims=2))[2][1]
+is=findall(final_p1[win,:] .> 0.5)
+ii = findmin(final_e1[is])[2]
+if win <= 4
+    win = win+3
+else
+    win = win + 7
+end
+pars = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
+fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+pars[35] = -10^10
+writedlm("hxt_1_best_particle_model_5.txt",pars)
+
+orig = readdlm("hxt1_955/pts_$(ii)_$win.txt")
+final_pars = zeros(52,size(orig,2))
+for i = 1:size(orig,2)
+    pars = orig[:,i]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+    pars[35] = -10^10
+    final_pars[:,i] .= pars
+end
+writedlm("hxt_1_best_particle_model_5_posterior.txt",final_pars)
+
+using StatsPlots
+anim = @animate for i = 30:42
+    density(log10.(final_pars[i,:]),fill=true,alpha=0.5,xlims=(custombounds101[i][1],custombounds101[i][2]),label="",title="parameter $i")
+end
+gif(anim,"HXT6_model15_posterior.gif",fps=1)
