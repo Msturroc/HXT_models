@@ -1931,7 +1931,7 @@ win=findmax(mean(final_p6,dims=2))[2][1]
 is=findall(final_p6[win,:] .> 0.5)
 ii = findmin(final_e6[is])[2]
 for ii = 1:10
-    pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,end]
+    pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
     fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
     writedlm("hxt_6_best_particle_model_15_run_$ii.txt",pars)
