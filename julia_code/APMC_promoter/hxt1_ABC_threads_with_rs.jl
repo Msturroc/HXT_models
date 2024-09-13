@@ -1248,15 +1248,15 @@ for i = [1]
     end
 end
 
+using Plots
 using Measures
 i=1
 p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:8,[4,5,6,7,12,13,14,15]),xlabel="repeat",ylabel="model",colorbar_title="final probability",title="",clim=(0,1))
 p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
 p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:8,[4,5,6,7,12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
 plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
-savefig("heatmap_final_probabilities_hxt_rejigged_$i.png")
+savefig("heatmap_final_probabilities_hxt_rejigged_$(i).png")
 
-using Plots
 # ii=findmin(final_e1)[2]
 # win=findmax(final_p1[:,ii])[2]
 # win_pts = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
@@ -1682,6 +1682,7 @@ function model5(d2)
     fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[35] = -10^10
+    
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1724,6 +1725,7 @@ function model4(d2)
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
+
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1884,7 +1886,7 @@ function model1(d2)
 
 end
 
-if win < 8
+if win <= 4
     win = win+3
 else 
     win = win + 7
@@ -1922,34 +1924,34 @@ writedlm("final_p1.txt",final_p1)
 writedlm("final_e1.txt",final_e1)
 
 
-win=findmax(mean(final_p1,dims=2))[2][1]
-is=findall(final_p1[win,:] .> 0.5)
-ii = findmin(final_e1[is])[2]
-win = win+3
-pars = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
-fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
-pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
-pars[35] = -10^10
-writedlm("hxt_1_best_particle_model_5.txt",pars)
+# win=findmax(mean(final_p1,dims=2))[2][1]
+# is=findall(final_p1[win,:] .> 0.5)
+# ii = findmin(final_e1[is])[2]
+# win = win+3
+# pars = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
+# fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+# pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+# pars[35] = -10^10
+# writedlm("hxt_1_best_particle_model_5.txt",pars)
 
-orig = readdlm("hxt1_955/pts_$(ii)_$win.txt")
-final_pars = zeros(52,size(orig,2))
-for i = 1:size(orig,2)
-    pars = orig[:,i]
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
-    pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
-    pars[35] = -10^10
-    final_pars[:,i] .= pars
-end
-writedlm("hxt_1_best_particle_model_5_posterior.txt",final_pars)
+# orig = readdlm("hxt1_955/pts_$(ii)_$win.txt")
+# final_pars = zeros(52,size(orig,2))
+# for i = 1:size(orig,2)
+#     pars = orig[:,i]
+#     fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+#     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+#     pars[35] = -10^10
+#     final_pars[:,i] .= pars
+# end
+# writedlm("hxt_1_best_particle_model_5_posterior.txt",final_pars)
 
-using StatsPlots
-anim = @animate for i = 30:42
-    density(log10.(final_pars[i,:]),fill=true,alpha=0.5,xlims=(custombounds101[i][1],custombounds101[i][2]),label="",title="parameter $i")
-end
-gif(anim,"HXT6_model15_posterior.gif",fps=1)
+# using StatsPlots
+# anim = @animate for i = 30:42
+#     density(log10.(final_pars[i,:]),fill=true,alpha=0.5,xlims=(custombounds101[i][1],custombounds101[i][2]),label="",title="parameter $i")
+# end
+# gif(anim,"HXT6_model15_posterior.gif",fps=1)
 
-
+using DelimitedFiles
 for ii = 1:10, win in [1,2,3,4,5,6,7,8]
     #win=findmax(final_p1[:,ii])[2]
     if final_p1[win,ii]>0.01
@@ -2017,8 +2019,12 @@ for ii = 1:10, win in [1,2,3,4,5,6,7,8]
             pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
         end
 
-        win = win+3
+        if win <= 4
+            win = win+3
+        else 
+            win = win + 7
+        end
 
-        writedlm("hxt_1_best_particle_model_$(win)_run_$ii.txt",pars)
+        writedlm("hxt_1_best_particle_model_$(win)_run_$(ii).txt",pars)
     end
 end

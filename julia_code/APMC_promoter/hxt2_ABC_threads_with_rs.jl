@@ -215,7 +215,7 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
             kdhxt4 = parameters[j]; j += 1;# [32]
             ndhxt4 = parameters[j]; j += 1;# [33]
             shxt4 = parameters[j]; j += 1;# [34]
-            khxt4mth1 = parameters[j]; j += 1;# [35]
+            th = parameters[j]; j += 1;# [35]
             nhxt4mth1 = parameters[j]; j += 1;# [36]
             khxt4std1 = parameters[j]; j += 1;# [37]
             nhxt4std1 = parameters[j]; j += 1;# [38]
@@ -251,6 +251,9 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
             dmth1snf3= estd1max3 + thsnf3
             emig1max = (10^theta2)*imig1
             dmig2g = dmig2 * 10^thmig2 
+
+            khxt4mth1 = (smth1/dmth1)*exp(-th)
+
             if k2 > 10^4 || k2 < 10^(-4) 
                 error()
             end
@@ -277,6 +280,16 @@ function makeproblem1(intraceullar_glucose,lg, t, h0, genotype)
                 if smth1 < 10^(-2) || smth1 > 10^2
                     error()
                 end
+            end
+
+            if std1tot !== 0.0
+                if std1tot > 1 
+                    error()
+                end
+            end
+
+            if smth1/dmth1 > 10.0
+                error()
             end
 
             Snf1 = (1 + Std1 / ksnf1std1)^nsnf1 / ((1 + Std1 / ksnf1std1)^nsnf1 + ell*(1 + ig / ksnf1)^nsnf2)
@@ -382,7 +395,7 @@ end
 
 function rho_lens15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -420,8 +433,8 @@ function rho_lens15(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -429,9 +442,9 @@ end
 
 function rho_lens14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
-    pars[42] = 1e10 #mig2 - should be 40?
+    pars[42] = 1e10 #mig2
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -467,8 +480,8 @@ function rho_lens14(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -476,7 +489,7 @@ end
 
 function rho_lens13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -513,8 +526,8 @@ function rho_lens13(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -522,7 +535,7 @@ end
 
 function rho_lens12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -560,8 +573,8 @@ function rho_lens12(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -569,7 +582,7 @@ end
 
 function rho_lens11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -607,8 +620,8 @@ function rho_lens11(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -616,7 +629,7 @@ end
 
 function rho_lens10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -655,8 +668,8 @@ function rho_lens10(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -664,7 +677,7 @@ end
 
 function rho_lens9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -702,8 +715,8 @@ function rho_lens9(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -711,7 +724,7 @@ end
 
 function rho_lens8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -750,8 +763,8 @@ function rho_lens8(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -759,8 +772,9 @@ end
 
 function rho_lens7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -796,8 +810,8 @@ function rho_lens7(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -805,9 +819,10 @@ end
 
 function rho_lens6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -843,8 +858,8 @@ function rho_lens6(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -852,8 +867,9 @@ end
 
 function rho_lens5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -889,8 +905,8 @@ function rho_lens5(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -898,9 +914,10 @@ end
 
 function rho_lens4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -936,8 +953,8 @@ function rho_lens4(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -945,7 +962,7 @@ end
 
 function rho_lens3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -983,8 +1000,8 @@ function rho_lens3(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -992,7 +1009,7 @@ end
 
 function rho_lens2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1031,8 +1048,8 @@ function rho_lens2(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1040,7 +1057,7 @@ end
 
 function rho_lens1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1078,8 +1095,8 @@ function rho_lens1(d2)
     out = trysolve.(problems, [pars[1:48]], fluorescence,fluorescence_sem,tpoints)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
-    if length(errors) < 1
-        E = 4.0 - length(errors) 
+    if length(errors) < 4
+        E = mean(errors) + 4.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1098,7 +1115,7 @@ custombounds101 =
 (log10(1.0), log10(5.0)), # nmth1rgt2 9
 (-4.0,2.0), # dmth1snf3 10
 (-4.0,2.0), # dmth1rgt2 11
-(-2.0, 1.0), # smth1 12
+(-2.0, 2.0), # thmth1 12
 (-4.0,4.0), # kmig1mth1 13
 (log10(1.0), log10(5.0)), # nmig1mth1 14
 (-4.0,4.0), # kmig2mth1 15
@@ -1121,7 +1138,7 @@ custombounds101 =
 (-4.0,4.0), # kdhxt4 32, 3
 (log10(1.0), log10(5.0)), # ndhxt4 33, 4
 (-2.0,2.0), # shxt4 34, 5
-(-4.0,4.0), # khxt4mth1 35, 6
+(-10.0,log10(3.0)), # khxt4mth1 35, 6
 (log10(1.0), log10(5.0)), # nhxt4mth1 36, 7
 (-4.0,4.0),  #khxt4std1 37, 8
 (log10(1.0), log10(5.0)), # nhxt4std1 38, 9
@@ -1207,11 +1224,11 @@ include("updated_abc_model_comparison_threads.jl")
 for ii = 1:10
     apmc_output = APMC(np, [model_lens8,model_lens9,model_lens10,model_lens11,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens8,rho_lens9,rho_lens10,rho_lens11,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
-    writedlm("HXT2_846/p_$(ii).txt", apmc_output.p)
-    writedlm("HXT2_846/e_$(ii).txt", apmc_output.epsilon)
+    writedlm("hxt2_955/p_$(ii).txt", apmc_output.p)
+    writedlm("hxt2_955/e_$(ii).txt", apmc_output.epsilon)
     for jj in 1:8
-        writedlm("HXT2_846/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
-        writedlm("HXT2_846/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
+        writedlm("hxt2_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
+        writedlm("hxt2_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
     end
 end
 
@@ -1219,48 +1236,39 @@ using Plots
 using DelimitedFiles
 using StatsBase
 
-final_p1 = zeros(8,10)
-final_e1 = zeros(10)
+final_p2 = zeros(8,10)
+final_e2 = zeros(10)
 
-for i = [1]
+for i = [2]
     for j = 1:10
-        p = readdlm("hxt$(i)_846/p_$j.txt")
+        p = readdlm("hxt$(i)_955/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("hxt$(i)_846/e_$j.txt")
+        e = readdlm("hxt$(i)_955/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
 
 using Measures
-for i = [1]
-    if i == 1 || i ==3 
-        p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:8,[4,5,6,7,12,13,14,15]),xlabel="repeat",ylabel="model",colorbar_title="final probability",title="",clim=(0,1))
-        p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
-        p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:8,[4,5,6,7,12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
-        plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
-        savefig("heatmap_final_probabilities_hxt_rejigged_$i.png")
-    else
-        p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:8,[8,9,10,11,12,13,14,15]),xlabel="repeat",ylabel="model",colorbar_title="final probability",title="",clim=(0,1))
-        p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
-        p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:8,[8,9,10,11,12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
-        plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
-        savefig("heatmap_final_probabilities_hxt_rejigged_$i.png")
-    end
-end
+i=2
+p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:8,[8,9,10,11,12,13,14,15]),xlabel="repeat",ylabel="model",colorbar_title="final probability",title="",clim=(0,1))
+p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
+p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:8,[8,9,10,11,12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
+plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
+savefig("heatmap_final_probabilities_hxt_rejigged_$(i).png")
 
 using Plots
 # ii=findmin(final_e1)[2]
 # win=findmax(final_p1[:,ii])[2]
-# win_pts = readdlm("HXT2_846/pts_$(ii)_$win.txt")[:,end]
+# win_pts = readdlm("hxt1_955/pts_$(ii)_$win.txt")[:,end]
 
-win=findmax(mean(final_p1,dims=2))[2][1]
-is=findall(final_p1[win,:] .> 0.5)
-ii = findmin(final_e1[is])[2]
-win_pts = readdlm("HXT2_846/pts_$(ii)_$win.txt")[:,end]
+win=findmax(mean(final_p2,dims=2))[2][1]
+is=findall(final_p2[win,:] .> 0.5)
+ii = findmin(final_e2[is])[2]
+win_pts = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -1300,7 +1308,7 @@ end
 
 function model14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig2 - should be 40?
     problems =[]
@@ -1341,7 +1349,7 @@ end
 
 function model13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -1381,7 +1389,7 @@ end
 
 function model12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -1422,7 +1430,7 @@ end
 
 function model11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -1463,7 +1471,7 @@ end
 
 function model10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1505,7 +1513,7 @@ end
 
 function model9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -1546,7 +1554,7 @@ end
 
 function model8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -1588,8 +1596,9 @@ end
 
 function model7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1628,9 +1637,10 @@ end
 
 function model6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1669,8 +1679,9 @@ end
 
 function model5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1709,9 +1720,10 @@ end
 
 function model4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
+    pars[35] = -10^10
     problems =[]
     glucose_interp = []
     int_glucose_interp = []
@@ -1750,7 +1762,7 @@ end
 
 function model3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1791,7 +1803,7 @@ end
 
 function model2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1833,7 +1845,7 @@ end
 
 function model1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1873,7 +1885,6 @@ function model1(d2)
 end
 
 
-
 win = win + 7
 sols=eval(Meta.parse("model$win(win_pts)"))
 
@@ -1887,9 +1898,75 @@ p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
 p4=plot(tpoints[4],sols[4])
 p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
 plot(p1,p2,p3,p4,layout=(2,2))
-savefig("winning_model_$(win)_sample_solution_HXT2_846.png")
+savefig("winning_model_$(win)_sample_solution_hxt2_955.png")
 
 # bar(apmc_output.p[:,end],xlabel="model",ylabel="final probability")
-# savefig("final_model_probabilities_HXT2.png")
+# savefig("final_model_probabilities_HXT1.png")
 
 #sols = trysolve2.(problems, [pars], fluorescence,fluorescence_sem,tpoints)
+
+
+final_p2 = zeros(8,10)
+final_e2 = zeros(10)
+
+for j = 1:10
+    p = readdlm("hxt2_955/p_$j.txt")
+    eval(Meta.parse("final_p2"))[:,j] = p[:,end]
+    e = readdlm("hxt2_955/e_$j.txt")
+    eval(Meta.parse("final_e2"))[j] = e[end]
+end
+writedlm("final_p2.txt",final_p2)
+writedlm("final_e2.txt",final_e2)
+
+
+for ii = 1:10, win in [1,2,3,4,5,6,7,8]
+    #win=findmax(final_p1[:,ii])[2]
+    if final_p2[win,ii]>0.01
+
+        if win == 1
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
+            pars[38] = 1e10 #std1, mig1
+            pars[42] = 1e10 #mig2
+        elseif win == 2
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
+            pars[38] = 1e10 #std1, mig1
+        elseif win == 3
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
+            pars[38] = 1e10 #std1
+            pars[42] = 1e10 #mig2
+        elseif win ==4
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
+            pars[38] = 1e10 #std1
+        elseif win==5
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
+            pars[42] = 1e10 #mig1, mig2
+        elseif win==6
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
+        elseif win==7
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
+            pars[42] = 1e10 #mig2 - should be 40?
+        elseif win==8
+            pars = readdlm("hxt2_955/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
+        end
+
+        win = win+7
+
+        writedlm("hxt_2_best_particle_model_$(win)_run_$(ii).txt",pars)
+    end
+end
