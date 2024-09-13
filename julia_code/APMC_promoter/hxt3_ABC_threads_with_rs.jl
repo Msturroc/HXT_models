@@ -1133,10 +1133,10 @@ custombounds101 =
 (log10(1.0), log10(5.0)), # nmig2std1 27
 (-4.0,4.0), # kmig2mth1 28
 (log10(1.0), log10(5.0)), # nmig2mth1 29
-(-1.5546342970446156,-0.3886585742611539), # dhxt4 30, 1
-(-1.4346229631313553,-0.3586557407828388), # dhxt4max 31, 2
-(1.9051015841091236,4.0), # kdhxt4 32, 3
-(log10(3.844), log10(5.0)), # ndhxt4 33, 4
+(-4.0,2.0), # dhxt4 30, 1
+(-4.0,2.0), # dhxt4max 31, 2
+(-4.0,4.0), # kdhxt4 32, 3
+(log10(1.0), log10(5.0)), # ndhxt4 33, 4
 (-2.0,2.0), # shxt4 34, 5
 (-10.0,log10(3.0)), # khxt4mth1 35, 6
 (log10(1.0), log10(5.0)), # nhxt4mth1 36, 7
@@ -1224,11 +1224,11 @@ include("updated_abc_model_comparison_threads.jl")
 for ii = 1:10
     apmc_output = APMC(np, [model_lens4,model_lens5,model_lens6,model_lens7,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens4,rho_lens5,rho_lens6,rho_lens7,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
-    writedlm("hxt3_955_shrunk/p_$(ii).txt", apmc_output.p)
-    writedlm("hxt3_955_shrunk/e_$(ii).txt", apmc_output.epsilon)
+    writedlm("hxt3_955/p_$(ii).txt", apmc_output.p)
+    writedlm("hxt3_955/e_$(ii).txt", apmc_output.epsilon)
     for jj in 1:8
-        writedlm("hxt3_955_shrunk/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
-        writedlm("hxt3_955_shrunk/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
+        writedlm("hxt3_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
+        writedlm("hxt3_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
     end
 end
 
@@ -1241,9 +1241,9 @@ final_e3 = zeros(10)
 
 for i = [3]
     for j = 1:10
-        p = readdlm("hxt$(i)_955_shrunk/p_$j.txt")
+        p = readdlm("hxt$(i)_955/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("hxt$(i)_955_shrunk/e_$j.txt")
+        e = readdlm("hxt$(i)_955/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
@@ -1255,12 +1255,12 @@ p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:8,[4,5,6,7,12,13,14,15]),xlab
 p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
 p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:8,[4,5,6,7,12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
 plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
-savefig("heatmap_final_probabilities_hxt_rejigged_$(i)_shrunk.png")
+savefig("heatmap_final_probabilities_hxt_rejigged_$(i).png")
 
 win=findmax(mean(final_p3,dims=2))[2][1]
 is=findall(final_p3[win,:] .> 0.5)
 ii = findmin(final_e3[is])[2]
-win_pts = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,end]
+win_pts = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
     pars = copy(d2)
@@ -1899,7 +1899,7 @@ p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
 p4=plot(tpoints[4],sols[4])
 p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
 plot(p1,p2,p3,p4,layout=(2,2))
-savefig("winning_model_$(win)_sample_solution_hxt3_955_shrunk.png")
+savefig("winning_model_$(win)_sample_solution_hxt3_955.png")
 
 # bar(apmc_output.p[:,end],xlabel="model",ylabel="final probability")
 # savefig("final_model_probabilities_hxt3.png")
@@ -1911,37 +1911,37 @@ final_p3 = zeros(8,10)
 final_e3 = zeros(10)
 
 for j = 1:10
-    p = readdlm("hxt3_955_shrunk/p_$j.txt")
+    p = readdlm("hxt3_955/p_$j.txt")
     eval(Meta.parse("final_p3"))[:,j] = p[:,end]
-    e = readdlm("hxt3_955_shrunk/e_$j.txt")
+    e = readdlm("hxt3_955/e_$j.txt")
     eval(Meta.parse("final_e3"))[j] = e[end]
 end
-writedlm("final_p3_shrunk.txt",final_p3)
-writedlm("final_e3_shrunk.txt",final_e3)
+writedlm("final_p3.txt",final_p3)
+writedlm("final_e3.txt",final_e3)
 
 using DelimitedFiles
 for ii = 1:10, win in [1,2,3,4,5,6,7,8]
     #win=findmax(final_p1[:,ii])[2]
     if final_p3[win,ii]>0.01
         if win == 2
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
             pars[35] = -10^10
         elseif win == 1 
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
             pars[42] = 1e10 #mig2
             pars[35] = -10^10
         elseif win == 3
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
             pars[42] = 1e10 #mig2
             pars[35] = -10^10
         elseif win == 4
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
             pars[35] = -10^10
@@ -1968,21 +1968,21 @@ for ii = 1:10, win in [1,2,3,4,5,6,7,8]
         #     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
         #     pars[38] = 1e10 #std1
         elseif win==5
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
             pars[42] = 1e10 #mig1, mig2
         elseif win==6
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
         elseif win==7
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
             pars[42] = 1e10 #mig2 - should be 40?
         elseif win==8
-            pars = readdlm("hxt3_955_shrunk/pts_$(ii)_$win.txt")[:,1]
+            pars = readdlm("hxt3_955/pts_$(ii)_$win.txt")[:,1]
             fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
         end
@@ -1993,6 +1993,6 @@ for ii = 1:10, win in [1,2,3,4,5,6,7,8]
             win = win + 7
         end
 
-        writedlm("hxt_3_best_particle_model_$(win)_run_$(ii)_shrunk.txt",pars)
+        writedlm("best_fit_parameters_each_model_each_run/hxt_3_best_particle_model_$(win)_run_$(ii).txt",pars)
     end
 end
