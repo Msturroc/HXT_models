@@ -1242,9 +1242,9 @@ final_e6 = zeros(10)
 
 for i = [6]
     for j = 1:10
-        p = readdlm("hxt$(i)_955_shrunk/p_$j.txt")
+        p = readdlm("hxt$(i)_955/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("hxt$(i)_955_shrunk/e_$j.txt")
+        e = readdlm("hxt$(i)_955/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
@@ -1941,6 +1941,6 @@ for ii = 1:10, win in [1,2,3,4]
         end
         win = win+11
 
-        writedlm("hxt_6_best_particle_model_$(win)_run_$(ii)_shrunk.txt",pars)
+        writedlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_$(win)_run_$(ii).txt",pars)
     end
 end
