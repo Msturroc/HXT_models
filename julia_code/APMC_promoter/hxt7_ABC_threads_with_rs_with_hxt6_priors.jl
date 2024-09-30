@@ -1984,3 +1984,17 @@ end
 plot(fluorescence6,layout=(2,2))
 plot!(fluorescence7,layout=(2,2))
 
+pars = readdlm("best_fit_parameters_each_model_each_run/hxt_7_best_particle_model_15_run_1_hxt6_posterior.txt")[30:42,1]
+sols=model15(log10.(pars))
+
+gr(label="",xlabel="time (hours)",ylabel="fluorescence")
+p1=plot(tpoints[1],sols[1])
+p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
+p2=plot(tpoints[2],sols[2])
+p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
+p3=plot(tpoints[3],sols[3])
+p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
+p4=plot(tpoints[4],sols[4])
+p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
+plot(p1,p2,p3,p4,layout=(2,2))
+savefig("winning_model_15_sample_solution_hxt7_955_with_hxt6_posterior.png")
