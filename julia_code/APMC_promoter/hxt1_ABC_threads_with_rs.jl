@@ -1221,7 +1221,7 @@ include("types.jl")
 include("functions.jl")
 include("updated_abc_model_comparison_threads.jl")
 
-for ii = 1:10
+for ii = 6:10
     apmc_output = APMC(np, [model_lens4,model_lens5,model_lens6,model_lens7,model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens4,rho_lens5,rho_lens6,rho_lens7,rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
     writedlm("hxt1_985/p_$(ii).txt", apmc_output.p)
@@ -1263,7 +1263,7 @@ savefig("heatmap_final_probabilities_hxt_rejigged_$(i)_985.png")
 
 win=findmax(mean(final_p1,dims=2))[2][1]
 is=findall(final_p1[win,:] .> 0.5)
-ii = findmin(final_e1[is])[2]
+ii = is[findmin(final_e1[is])[2]]
 win_pts = readdlm("hxt1_985/pts_$(ii)_$win.txt")[:,end]
 
 function model15(d2)
