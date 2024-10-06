@@ -395,7 +395,7 @@ end
 
 function rho_lens15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -442,7 +442,7 @@ end
 
 function rho_lens14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig2 - should be 40?
     problems =[]
@@ -489,7 +489,7 @@ end
 
 function rho_lens13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -535,7 +535,7 @@ end
 
 function rho_lens12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -582,7 +582,7 @@ end
 
 function rho_lens11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -629,7 +629,7 @@ end
 
 function rho_lens10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -677,7 +677,7 @@ end
 
 function rho_lens9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -724,7 +724,7 @@ end
 
 function rho_lens8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -772,7 +772,7 @@ end
 
 function rho_lens7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[35] = -10^10
     problems =[]
@@ -819,7 +819,7 @@ end
 
 function rho_lens6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -867,7 +867,7 @@ end
 
 function rho_lens5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[35] = -10^10
     problems =[]
@@ -914,7 +914,7 @@ end
 
 function rho_lens4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -962,7 +962,7 @@ end
 
 function rho_lens3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1009,7 +1009,7 @@ end
 
 function rho_lens2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1057,7 +1057,7 @@ end
 
 function rho_lens1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1225,11 +1225,11 @@ include("updated_abc_model_comparison_threads.jl")
 for ii = 1:10
     apmc_output = APMC(np, [model_lens12,model_lens13,model_lens14,model_lens15], [rho_lens12,rho_lens13,rho_lens14,rho_lens15], perturb="Cauchy",n=0.5)
 
-    writedlm("hxt6_955/p_$(ii).txt", apmc_output.p)
-    writedlm("hxt6_955/e_$(ii).txt", apmc_output.epsilon)
+    writedlm("hxt6_985/p_$(ii).txt", apmc_output.p)
+    writedlm("hxt6_985/e_$(ii).txt", apmc_output.epsilon)
     for jj in 1:4
-        writedlm("hxt6_955/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
-        writedlm("hxt6_955/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
+        writedlm("hxt6_985/pts_$(ii)_$jj.txt",apmc_output.pts[jj,end])
+        writedlm("hxt6_985/wts_$(ii)_$jj.txt",apmc_output.wts[jj,end])
     end
 end
 
@@ -1242,9 +1242,9 @@ final_e6 = zeros(10)
 
 for i = [6]
     for j = 1:10
-        p = readdlm("hxt$(i)_955/p_$j.txt")
+        p = readdlm("hxt$(i)_985/p_$j.txt")
         eval(Meta.parse("final_p$i"))[:,j] = p[:,end]
-        e = readdlm("hxt$(i)_955/e_$j.txt")
+        e = readdlm("hxt$(i)_985/e_$j.txt")
         eval(Meta.parse("final_e$i"))[j] = e[end]
     end
 end
@@ -1255,22 +1255,22 @@ p1=heatmap(eval(Meta.parse("final_p$i")),yticks=(1:4,[12,13,14,15]),xlabel="repe
 p2=bar(eval(Meta.parse("final_e$i")),xlabel="repeat",label="",ylabel="final error",title="")
 p3=bar(mean(eval(Meta.parse("final_p$i")),dims=2),xticks = (1:4,[12,13,14,15]),xlabel="model",ylabel="average final probability",title="HXT$i",ylim=(0,1),label="")
 plot(p1,p3,p2,layout=(1,3),size=(1200,400),margins=5mm)
-savefig("heatmap_final_probabilities_hxt_rejigged_$(i).png")
+savefig("heatmap_final_probabilities_hxt_rejigged_$(i)_985.png")
 
 using Plots
 # ii=findmin(final_e1)[2]
 # win=findmax(final_p1[:,ii])[2]
-# win_pts = readdlm("hxt6_955_2k/pts_$(ii)_$win.txt")[:,end]
+# win_pts = readdlm("hxt6_985_2k/pts_$(ii)_$win.txt")[:,end]
 
 win=findmax(mean(final_p6,dims=2))[2][1]
 is=findall(final_p6[win,:] .> 0.5)
 ii = findmin(final_e6[is])[2]
 ii=1
-win_pts = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
+win_pts = readdlm("hxt6_985/pts_$(ii)_$win.txt")[:,1]
 
 function model15(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
 
     problems =[]
@@ -1310,7 +1310,7 @@ end
 
 function model14(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig2 - should be 40?
     problems =[]
@@ -1351,7 +1351,7 @@ end
 
 function model13(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
     problems =[]
     glucose_interp = []
@@ -1391,7 +1391,7 @@ end
 
 function model12(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[42] = 1e10 #mig1, mig2
     problems =[]
@@ -1432,7 +1432,7 @@ end
 
 function model11(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8:11];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     problems =[]
@@ -1473,7 +1473,7 @@ end
 
 function model10(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;pars[8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1515,7 +1515,7 @@ end
 
 function model9(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     problems =[]
@@ -1556,7 +1556,7 @@ end
 
 function model8(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:7];fixed_p[37];0.0;10.0;fixed_p[40];0.0;1.0;fixed_p[43:48];fixed_p[49:52]]
     pars[38] = 1e10 #std1, mig1
     pars[42] = 1e10 #mig2
@@ -1598,7 +1598,7 @@ end
 
 function model7(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:11];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[35] = -10^10
     problems =[]
@@ -1639,7 +1639,7 @@ end
 
 function model6(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:8];fixed_p[40];pars[9];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -1681,7 +1681,7 @@ end
 
 function model5(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;pars[8];0.0;pars[9];fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[35] = -10^10
     problems =[]
@@ -1722,7 +1722,7 @@ end
 
 function model4(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;pars[6:7];10.0;fixed_p[40];0.0;0.0;fixed_p[43:48];fixed_p[49:52]]#mth1,mig1
     pars[42] = 1e10 #mig2
     pars[35] = -10^10
@@ -1764,7 +1764,7 @@ end
 
 function model3(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];0.0;pars[6:9];fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1805,7 +1805,7 @@ end
 
 function model2(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;1.0;fixed_p[38];1.0;pars[6];fixed_p[40];pars[7];1.0;fixed_p[43:48];fixed_p[49:52]]#mth1
     pars[38] = 1e10 #std1
     pars[42] = 1e10 #mig2
@@ -1847,7 +1847,7 @@ end
 
 function model1(d2)
     pars = copy(d2)
-    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+    fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
     pars = 10 .^ [fixed_p[1:29];pars[1:5];10.0;0.0;fixed_p[38];1.0;10.0;pars[6];0.0;pars[7];fixed_p[43:48];fixed_p[49:52]]#mth1, mig1
     pars[38] = 1e10 #std1
     problems =[]
@@ -1899,7 +1899,7 @@ p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
 p4=plot(tpoints[4],sols[4])
 p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
 plot(p1,p2,p3,p4,layout=(2,2))
-savefig("winning_model_$(win)_sample_solution_hxt6_955.png")
+savefig("winning_model_$(win)_sample_solution_hxt6_985.png")
 
 # bar(apmc_output.p[:,end],xlabel="model",ylabel="final probability")
 # savefig("final_model_probabilities_HXT6.png")
@@ -1910,69 +1910,69 @@ final_p6 = zeros(4,10)
 final_e6 = zeros(10)
 
 for j = 1:10
-    p = readdlm("hxt6_955/p_$j.txt")
+    p = readdlm("hxt6_985/p_$j.txt")
     eval(Meta.parse("final_p6"))[:,j] = p[:,end]
-    e = readdlm("hxt6_955/e_$j.txt")
+    e = readdlm("hxt6_985/e_$j.txt")
     eval(Meta.parse("final_e6"))[j] = e[end]
 end
-writedlm("final_p6.txt",final_p6)
-writedlm("final_e6.txt",final_e6)
+writedlm("final_p6_985.txt",final_p6)
+writedlm("final_e6_985.txt",final_e6)
 
 for ii = 1:10, win in [1,2,3,4]
     #win=findmax(final_p1[:,ii])[2]
     if final_p6[win,ii]>0
         if win==1
-            pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
-            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = readdlm("hxt6_985/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;fixed_p[40];1.0;1.0;fixed_p[43:48];fixed_p[49:52]]
             pars[42] = 1e10 #mig1, mig2
         elseif win==2
-            pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
-            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = readdlm("hxt6_985/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:9];10.0;pars[10];1.0;pars[11];fixed_p[43:48];fixed_p[49:52]] #mig1
         elseif win==3
-            pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
-            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = readdlm("hxt6_985/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars[1:10];fixed_p[40];pars[11];0.0;fixed_p[43:48];fixed_p[49:52]]
             pars[42] = 1e10 #mig2 - should be 40?
         elseif win==4
-            pars = readdlm("hxt6_955/pts_$(ii)_$win.txt")[:,1]
-            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+            pars = readdlm("hxt6_985/pts_$(ii)_$win.txt")[:,1]
+            fixed_p = readdlm("potential_particles/int_g_midpoint_parameters_985.txt")[:,1]
             pars = 10 .^ [fixed_p[1:29];pars;fixed_p[43:48];fixed_p[49:52]]
         end
         win = win+11
 
-        writedlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_$(win)_run_$(ii).txt",pars)
+        writedlm("best_fit_parameters_each_model_each_run_985/hxt_6_best_particle_model_$(win)_run_$(ii).txt",pars)
     end
 end
 
-using Plots
-pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1.txt")[30:42]
-sols=model15(log10.(pars))
+# using Plots
+# pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1.txt")[30:42]
+# sols=model15(log10.(pars))
 
-gr(label="",xlabel="time (hours)",ylabel="fluorescence")
-p1=plot(tpoints[1],sols[1])
-p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
-p2=plot(tpoints[2],sols[2])
-p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
-p3=plot(tpoints[3],sols[3])
-p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
-p4=plot(tpoints[4],sols[4])
-p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
-plot(p1,p2,p3,p4,layout=(2,2))
-savefig("hxt6_best_particle.png")
+# gr(label="",xlabel="time (hours)",ylabel="fluorescence")
+# p1=plot(tpoints[1],sols[1])
+# p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
+# p2=plot(tpoints[2],sols[2])
+# p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
+# p3=plot(tpoints[3],sols[3])
+# p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
+# p4=plot(tpoints[4],sols[4])
+# p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
+# plot(p1,p2,p3,p4,layout=(2,2))
+# savefig("hxt6_best_particle.png")
 
-pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1_shrunk.txt")[30:42]
-sols=model15(log10.(pars))
+# pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1_shrunk.txt")[30:42]
+# sols=model15(log10.(pars))
 
-gr(label="",xlabel="time (hours)",ylabel="fluorescence")
-p1=plot(tpoints[1],sols[1])
-p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
-p2=plot(tpoints[2],sols[2])
-p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
-p3=plot(tpoints[3],sols[3])
-p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
-p4=plot(tpoints[4],sols[4])
-p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
-plot(p1,p2,p3,p4,layout=(2,2))
-savefig("hxt6_best_particle_shrunk.png")
+# gr(label="",xlabel="time (hours)",ylabel="fluorescence")
+# p1=plot(tpoints[1],sols[1])
+# p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
+# p2=plot(tpoints[2],sols[2])
+# p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
+# p3=plot(tpoints[3],sols[3])
+# p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
+# p4=plot(tpoints[4],sols[4])
+# p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
+# plot(p1,p2,p3,p4,layout=(2,2))
+# savefig("hxt6_best_particle_shrunk.png")
