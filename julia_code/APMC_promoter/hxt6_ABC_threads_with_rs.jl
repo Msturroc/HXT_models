@@ -434,7 +434,7 @@ function rho_lens15(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -481,7 +481,7 @@ function rho_lens14(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -527,7 +527,7 @@ function rho_lens13(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -574,7 +574,7 @@ function rho_lens12(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -621,7 +621,7 @@ function rho_lens11(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -669,7 +669,7 @@ function rho_lens10(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -716,7 +716,7 @@ function rho_lens9(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -764,7 +764,7 @@ function rho_lens8(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -811,7 +811,7 @@ function rho_lens7(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -859,7 +859,7 @@ function rho_lens6(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -906,7 +906,7 @@ function rho_lens5(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -954,7 +954,7 @@ function rho_lens4(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1001,7 +1001,7 @@ function rho_lens3(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1049,7 +1049,7 @@ function rho_lens2(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1096,7 +1096,7 @@ function rho_lens1(d2)
     errors =  [i[1] for i in out]
     errors=errors[findall(errors .< 1e20)]
     if length(errors) < 4
-        E = mean(errors) + 4.0 - length(errors) 
+        E = mean(errors) + 40.0 - length(errors) 
     else
         E = mean(errors .* [3.0,1.0,1.0,1.0]) + 4.0 - length(errors)
     end
@@ -1215,7 +1215,7 @@ model_lens13 = [Uniform(p[1], p[2]) for p in custombounds13]
 model_lens14 = [Uniform(p[1], p[2]) for p in custombounds14] #Mig2 K0
 model_lens15 = [Uniform(p[1], p[2]) for p in custombounds15]
 
-np = 20000
+np = 2000
 
 include("types.jl")
 include("functions.jl")
@@ -1946,21 +1946,21 @@ for ii = 1:10, win in [1,2,3,4]
     end
 end
 
-# using Plots
-# pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1.txt")[30:42]
-# sols=model15(log10.(pars))
+using Plots
+pars = readdlm("best_fit_parameters_each_model_each_run_985/hxt_6_best_particle_model_15_run_1.txt")[30:42]
+sols=model15(log10.(pars))
 
-# gr(label="",xlabel="time (hours)",ylabel="fluorescence")
-# p1=plot(tpoints[1],sols[1])
-# p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
-# p2=plot(tpoints[2],sols[2])
-# p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
-# p3=plot(tpoints[3],sols[3])
-# p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
-# p4=plot(tpoints[4],sols[4])
-# p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
-# plot(p1,p2,p3,p4,layout=(2,2))
-# savefig("hxt6_best_particle.png")
+gr(label="",xlabel="time (hours)",ylabel="fluorescence")
+p1=plot(tpoints[1],sols[1])
+p1=plot!(tpoints[1],fluorescence[1],ribbon=fluorescence_sem[1])
+p2=plot(tpoints[2],sols[2])
+p2=plot!(tpoints[2],fluorescence[2],ribbon=fluorescence_sem[2])
+p3=plot(tpoints[3],sols[3])
+p3=plot!(tpoints[3],fluorescence[3],ribbon=fluorescence_sem[3])
+p4=plot(tpoints[4],sols[4])
+p4=plot!(tpoints[4],fluorescence[4],ribbon=fluorescence_sem[4])
+plot(p1,p2,p3,p4,layout=(2,2))
+savefig("winning_model_15_sample_solution_hxt6_985.png")
 
 # pars = readdlm("best_fit_parameters_each_model_each_run/hxt_6_best_particle_model_15_run_1_shrunk.txt")[30:42]
 # sols=model15(log10.(pars))
