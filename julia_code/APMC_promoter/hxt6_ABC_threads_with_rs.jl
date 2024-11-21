@@ -1215,7 +1215,7 @@ model_lens13 = [Uniform(p[1], p[2]) for p in custombounds13]
 model_lens14 = [Uniform(p[1], p[2]) for p in custombounds14] #Mig2 K0
 model_lens15 = [Uniform(p[1], p[2]) for p in custombounds15]
 
-np = 2000
+np = 20000
 
 include("types.jl")
 include("functions.jl")

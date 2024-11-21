@@ -559,492 +559,492 @@ function rho_lens(d2)
 end
 
 
-using BlackBoxOptim
-for i in 935:1000
-    pars1 = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
-    pars1[35] = log10(1.175)
-    @show rho_lens(pars1) 
-    x0=pars1
-    opt = BlackBoxOptim.bboptimize(rho_lens,x0;Method=:xnes,ini_sigma=0.1, SearchRange = custombounds101, MaxFuncEvals = 200000,NThreads=Threads.nthreads()-1)
-    pars = best_candidate(opt)
-    @show rho_lens(pars)
-    writedlm("int_g_midpoint_parameters_$i.txt",pars)
+# using BlackBoxOptim
+# for i in 935:1000
+#     pars1 = readdlm("int_g_midpoint_parameters_846_th.txt")[:,1]
+#     pars1[35] = log10(1.175)
+#     @show rho_lens(pars1) 
+#     x0=pars1
+#     opt = BlackBoxOptim.bboptimize(rho_lens,x0;Method=:xnes,ini_sigma=0.1, SearchRange = custombounds101, MaxFuncEvals = 200000,NThreads=Threads.nthreads()-1)
+#     pars = best_candidate(opt)
+#     @show rho_lens(pars)
+#     writedlm("int_g_midpoint_parameters_$i.txt",pars)
 
-    pars = 10 .^ pars
+#     pars = 10 .^ pars
 
-    problems =[]
-    glucose_interp = []
-    int_glucose_interp = []
-    count = 0
-    for h in unique(data[!,:strain])[1:6]
-        for g in unique(data[!,:experiment_type])
-            temp_data1 = data[coalesce.(data.signal_type .== "fluorescence" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
-            temp_data3 = data[coalesce.(data.signal_type .== "glucose_proxy" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
-            if !isempty(temp_data3)
-                temp_data4 = temp_data1[!, [1,3]]
-                temp_data6 = temp_data3[!, [1,3]]
-                times = temp_data3[!,:time]
-                fluor = temp_data4[!,:signal_value]
-                count = count + 1
-                if minimum(times) !== 0.0
-                    glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
-                    int_glucose = intracellular_glucose(vcat(0.0,times),glucose(vcat(0.0,times)),pars[48 + count])
-                    push!(glucose_interp,glucose)
-                    push!(int_glucose_interp,int_glucose)
-                else
-                    glucose = LinearInterpolation(times,temp_data6[1:length(times),:signal_value],extrapolation_bc=Line())
-                    int_glucose = intracellular_glucose(times,glucose(times),pars[48 + count])
-                    push!(glucose_interp,glucose)
-                    push!(int_glucose_interp,int_glucose)
-                end
+#     problems =[]
+#     glucose_interp = []
+#     int_glucose_interp = []
+#     count = 0
+#     for h in unique(data[!,:strain])[1:6]
+#         for g in unique(data[!,:experiment_type])
+#             temp_data1 = data[coalesce.(data.signal_type .== "fluorescence" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
+#             temp_data3 = data[coalesce.(data.signal_type .== "glucose_proxy" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
+#             if !isempty(temp_data3)
+#                 temp_data4 = temp_data1[!, [1,3]]
+#                 temp_data6 = temp_data3[!, [1,3]]
+#                 times = temp_data3[!,:time]
+#                 fluor = temp_data4[!,:signal_value]
+#                 count = count + 1
+#                 if minimum(times) !== 0.0
+#                     glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
+#                     int_glucose = intracellular_glucose(vcat(0.0,times),glucose(vcat(0.0,times)),pars[48 + count])
+#                     push!(glucose_interp,glucose)
+#                     push!(int_glucose_interp,int_glucose)
+#                 else
+#                     glucose = LinearInterpolation(times,temp_data6[1:length(times),:signal_value],extrapolation_bc=Line())
+#                     int_glucose = intracellular_glucose(times,glucose(times),pars[48 + count])
+#                     push!(glucose_interp,glucose)
+#                     push!(int_glucose_interp,int_glucose)
+#                 end
 
-                if h =="HXT4_GFP"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], wt))
-                elseif h == "HXT4_GFP_snf3_delta"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], snf3ko))
-                elseif h == "HXT4_GFP_rgt2_delta"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], rgt2ko))
-                elseif h == "HXT4_GFP_std1_delta"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], std1ko))
-                elseif h == "HXT4_GFP_mig1_delta"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mig1ko))
-                elseif h == "HXT4_GFP_mth1_delta"
-                    push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mth1ko))
-                end
-            end
-        end
-    end
-
-
-    using Plots
-    out_s=[]
-    out_m=[]
-    out=[]
-    #mkdir("output_$i")
-    for jj = 1:length(problems)
-        if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-                 push!(out,ones(length(tpoints[jj])))
-        else   
-            sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-            arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][1]
-            push!(out,arr)
-        end
-    end
-
-    plts = []
-    count = 0
-    gr(label="",grid=:on)
-    ys =[(0,4.5),(0,3.5),(0,15),(0,10),(0,3.5),(0,3),(0,4.5)]
-    for j in unique_experiment
-        count+=1
-        @show count
-        if count ∈ [1,3,4,5,6,7]
-            p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linewidth=3.0)
-            plot(p1,Plots.plot!(tpoints[1+(count-1)*3:3 .+ (count-1)*3],fluorescence[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linestyle=:dashdot))
-            push!(plts,p1)
-        end
-    end
-    display(plot(plts...,layout=(6,1),size=(500,1000)))
-    savefig("HXT4_midpoint_$(i)_check.png")
-
-    scatter(pars,label="$i",alpha=1.0)
-    scatter!([10.0 ^ custombounds101[j][1] for j in 1:49],label="lower",alpha=0.5)
-    scatter!([10.0 ^ custombounds101[j][2] for j in 1:49],label="upper",alpha=0.5,yscale=:log10,legend=:bottomleft)
-    savefig("params_$(i)_bounds_check.png")
-
-    out = trysolvet.(problems, [pars], fluorescence,fluorescence_sem,tpoints)
-    areaplot(tpoints[3],log10.((out[3][4] ./ pars[36]) .^ pars[37]),label="mth1",title="HXT4",alpha=0.5)
-    areaplot!(tpoints[3],log10.((out[3][2] ./ pars[40]) .^ pars[42]),label="mig1",alpha=0.5)
-    areaplot!(tpoints[3],log10.((out[3][3] ./ pars[41]) .^ pars[43]),label="mig2",alpha=0.5)
-    areaplot!(tpoints[3],log10.((out[3][5] ./ pars[38]) .^ pars[39]),label="std1",alpha=0.5,ylabel="log10(repression strength)")
-    savefig("repression_midpoint_log10_$i.png")
-
-    p1=areaplot(tpoints[3],(out[3][4] ./ pars[36]) .^ pars[37],label="mth1",ylabel="repression strength",title="HXT4",alpha=0.5,ylim=(0,1.2),xlabel="time")
-    p2=areaplot(tpoints[3],(out[3][5] ./ pars[38]) .^ pars[39],label="std1",alpha=0.5,ylabel="repression strength",ylim=(0,1.2),xlabel="time")
-    plot(p1,p2)
-    savefig("repression_midpoint_$i.png")
-
-    areaplot(tpoints[3],out[3][4],label="mth1",title="HXT4",alpha=0.5)
-    areaplot!(tpoints[3],out[3][2],label="mig1",alpha=0.5)
-    areaplot!(tpoints[3],out[3][3],label="mig2",alpha=0.5)
-    areaplot!(tpoints[3],out[3][5],label="std1",alpha=0.5)
-    savefig("repression_midpoint_$(i)_raw.png")
-end
-
-# Read all parameter sets and calculate their scores
-particles = []
-for i in 935:1000   
-    pars1 = readdlm("potential_particles/int_g_midpoint_parameters_$i.txt")[:,1]
-    score = rho_lens(pars1)
-    push!(particles, (pars1, score, i))
-end
-
-# Sort particles by score (ascending order)
-sort!(particles, by = x -> x[2])
-
-# Keep only the best 20 particles
-best_particles = particles[1:min(20, length(particles))]
-
-# Save the best particles
-for (j, (params, score, i)) in enumerate(best_particles)
-    writedlm("best_particles/$i.txt", params)
-    println("Saved particle $i with score $score")
-end
+#                 if h =="HXT4_GFP"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], wt))
+#                 elseif h == "HXT4_GFP_snf3_delta"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], snf3ko))
+#                 elseif h == "HXT4_GFP_rgt2_delta"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], rgt2ko))
+#                 elseif h == "HXT4_GFP_std1_delta"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], std1ko))
+#                 elseif h == "HXT4_GFP_mig1_delta"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mig1ko))
+#                 elseif h == "HXT4_GFP_mth1_delta"
+#                     push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mth1ko))
+#                 end
+#             end
+#         end
+#     end
 
 
-errors=[]
-for i in 245:273
-    pars = readdlm("int_g_midpoint_parameters_$i.txt")[:,1]
-    push!(errors,rho_lens(pars))
-end
+#     using Plots
+#     out_s=[]
+#     out_m=[]
+#     out=[]
+#     #mkdir("output_$i")
+#     for jj = 1:length(problems)
+#         if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#                  push!(out,ones(length(tpoints[jj])))
+#         else   
+#             sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
+#             arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][1]
+#             push!(out,arr)
+#         end
+#     end
 
-ind = sortperm(errors)
+#     plts = []
+#     count = 0
+#     gr(label="",grid=:on)
+#     ys =[(0,4.5),(0,3.5),(0,15),(0,10),(0,3.5),(0,3),(0,4.5)]
+#     for j in unique_experiment
+#         count+=1
+#         @show count
+#         if count ∈ [1,3,4,5,6,7]
+#             p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linewidth=3.0)
+#             plot(p1,Plots.plot!(tpoints[1+(count-1)*3:3 .+ (count-1)*3],fluorescence[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linestyle=:dashdot))
+#             push!(plts,p1)
+#         end
+#     end
+#     display(plot(plts...,layout=(6,1),size=(500,1000)))
+#     savefig("HXT4_midpoint_$(i)_check.png")
 
-rho_lens(readdlm("int_g_midpoint_parameters_$(ind[1]).txt")[:,1])
+#     scatter(pars,label="$i",alpha=1.0)
+#     scatter!([10.0 ^ custombounds101[j][1] for j in 1:49],label="lower",alpha=0.5)
+#     scatter!([10.0 ^ custombounds101[j][2] for j in 1:49],label="upper",alpha=0.5,yscale=:log10,legend=:bottomleft)
+#     savefig("params_$(i)_bounds_check.png")
 
-for i in ind[1:5]
-    pars = readdlm("int_g_midpoint_parameters_$i.txt")[:,1]
-    scatter(["dmig2g","kdmig2","mdmig2","r"],10 .^ pars[46:49],label="$i",alpha=1.0)
-    scatter!(["dmig2g","kdmig2","mdmig2","r"],[10.0 ^ custombounds101[j][1] for j in 46:49],label="lower",alpha=0.5)
-    scatter!(["dmig2g","kdmig2","mdmig2","r"],[10.0 ^ custombounds101[j][2] for j in 46:49],label="upper",alpha=0.5,legend=:topleft,yscale=:log10)
-    savefig("mig2_params_$i.png")
-end
+#     out = trysolvet.(problems, [pars], fluorescence,fluorescence_sem,tpoints)
+#     areaplot(tpoints[3],log10.((out[3][4] ./ pars[36]) .^ pars[37]),label="mth1",title="HXT4",alpha=0.5)
+#     areaplot!(tpoints[3],log10.((out[3][2] ./ pars[40]) .^ pars[42]),label="mig1",alpha=0.5)
+#     areaplot!(tpoints[3],log10.((out[3][3] ./ pars[41]) .^ pars[43]),label="mig2",alpha=0.5)
+#     areaplot!(tpoints[3],log10.((out[3][5] ./ pars[38]) .^ pars[39]),label="std1",alpha=0.5,ylabel="log10(repression strength)")
+#     savefig("repression_midpoint_log10_$i.png")
 
+#     p1=areaplot(tpoints[3],(out[3][4] ./ pars[36]) .^ pars[37],label="mth1",ylabel="repression strength",title="HXT4",alpha=0.5,ylim=(0,1.2),xlabel="time")
+#     p2=areaplot(tpoints[3],(out[3][5] ./ pars[38]) .^ pars[39],label="std1",alpha=0.5,ylabel="repression strength",ylim=(0,1.2),xlabel="time")
+#     plot(p1,p2)
+#     savefig("repression_midpoint_$i.png")
 
+#     areaplot(tpoints[3],out[3][4],label="mth1",title="HXT4",alpha=0.5)
+#     areaplot!(tpoints[3],out[3][2],label="mig1",alpha=0.5)
+#     areaplot!(tpoints[3],out[3][3],label="mig2",alpha=0.5)
+#     areaplot!(tpoints[3],out[3][5],label="std1",alpha=0.5)
+#     savefig("repression_midpoint_$(i)_raw.png")
+# end
 
+# # Read all parameter sets and calculate their scores
+# particles = []
+# for i in 935:1000   
+#     pars1 = readdlm("potential_particles/int_g_midpoint_parameters_$i.txt")[:,1]
+#     score = rho_lens(pars1)
+#     push!(particles, (pars1, score, i))
+# end
 
-plot(tpoints[1],int_glucose_interp[1](tpoints[1]))
-plot!(tpoints[2],int_glucose_interp[2](tpoints[2]))
-plot!(tpoints[3],int_glucose_interp[3](tpoints[3]))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("WT")
+# # Sort particles by score (ascending order)
+# sort!(particles, by = x -> x[2])
 
+# # Keep only the best 20 particles
+# best_particles = particles[1:min(20, length(particles))]
 
-plot(tpoints[10],int_glucose_interp[10](tpoints[10]))
-plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
-plot!(tpoints[12],int_glucose_interp[12](tpoints[12]),yscale=:log10)
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("mth1")
-
-plot(tpoints[13],int_glucose_interp[13](tpoints[13]))
-plot!(tpoints[14],int_glucose_interp[14](tpoints[14]))
-plot!(tpoints[15],int_glucose_interp[15](tpoints[15]))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("rgt2")
-
-plot(tpoints[10],glucose_interp[10](tpoints[10]))
-plot!(tpoints[10],int_glucose_interp[10](tpoints[10]))
-
-plot(tpoints[11],glucose_interp[11](tpoints[11]))
-plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
-
-pars = readdlm("int_g_midpoint_parameters_769.txt")
-
-pars = 10 .^ pars
-
-problems =[]
-glucose_interp = []
-int_glucose_interp = []
-count = 0
-for h in unique(data[!,:strain])[1:6]
-    for g in unique(data[!,:experiment_type])
-        temp_data1 = data[coalesce.(data.signal_type .== "fluorescence" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
-        temp_data3 = data[coalesce.(data.signal_type .== "glucose_proxy" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
-        if !isempty(temp_data3)
-            temp_data4 = temp_data1[!, [1,3]]
-            temp_data6 = temp_data3[!, [1,3]]
-            times = temp_data3[!,:time]
-            fluor = temp_data4[!,:signal_value]
-            count = count + 1
-            if minimum(times) !== 0.0
-                glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
-                int_glucose = intracellular_glucose(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),pars[48 + count])
-                push!(glucose_interp,glucose)
-                push!(int_glucose_interp,int_glucose)
-            else
-                glucose = LinearInterpolation(times,temp_data6[1:length(times),:signal_value],extrapolation_bc=Line())
-                int_glucose = intracellular_glucose(times,temp_data6[1:length(times),:signal_value],pars[48 + count])
-                push!(glucose_interp,glucose)
-                push!(int_glucose_interp,int_glucose)
-            end
-
-            if h =="HXT4_GFP"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], wt))
-            elseif h == "HXT4_GFP_snf3_delta"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], snf3ko))
-            elseif h == "HXT4_GFP_rgt2_delta"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], rgt2ko))
-            elseif h == "HXT4_GFP_std1_delta"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], std1ko))
-            elseif h == "HXT4_GFP_mig1_delta"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mig1ko))
-            elseif h == "HXT4_GFP_mth1_delta"
-                push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mth1ko))
-            end
-        end
-    end
-end
+# # Save the best particles
+# for (j, (params, score, i)) in enumerate(best_particles)
+#     writedlm("best_particles/$i.txt", params)
+#     println("Saved particle $i with score $score")
+# end
 
 
-using Plots
-out_s=[]
-out_m=[]
-out=[]
-#mkdir("output_$i")
-for jj = 1:length(problems)
-    if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-             push!(out,ones(length(tpoints[jj])))
-    else   
-        sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][1]
-        push!(out,arr)
-    end
-end
+# errors=[]
+# for i in 245:273
+#     pars = readdlm("int_g_midpoint_parameters_$i.txt")[:,1]
+#     push!(errors,rho_lens(pars))
+# end
 
-plts = []
-count = 0
-gr(label="",grid=:on)
-ys =[(0,4.5),(0,3.5),(0,15),(0,10),(0,3.5),(0,3),(0,4.5)]
-for j in unique_experiment
-    count+=1
-    @show count
-    if count ∈ [1,3,4,5,6,7]
-        p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linewidth=3.0)
-        plot(p1,Plots.plot!(tpoints[1+(count-1)*3:3 .+ (count-1)*3],fluorescence[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linestyle=:dashdot))
-        push!(plts,p1)
-    end
-end
-display(plot(plts...,layout=(6,1),size=(500,1000)))
-savefig("HXT4_midpoint_$(i)_check.png")
+# ind = sortperm(errors)
+
+# rho_lens(readdlm("int_g_midpoint_parameters_$(ind[1]).txt")[:,1])
+
+# for i in ind[1:5]
+#     pars = readdlm("int_g_midpoint_parameters_$i.txt")[:,1]
+#     scatter(["dmig2g","kdmig2","mdmig2","r"],10 .^ pars[46:49],label="$i",alpha=1.0)
+#     scatter!(["dmig2g","kdmig2","mdmig2","r"],[10.0 ^ custombounds101[j][1] for j in 46:49],label="lower",alpha=0.5)
+#     scatter!(["dmig2g","kdmig2","mdmig2","r"],[10.0 ^ custombounds101[j][2] for j in 46:49],label="upper",alpha=0.5,legend=:topleft,yscale=:log10)
+#     savefig("mig2_params_$i.png")
+# end
 
 
-out_s=[]
-out_m=[]
-out=[]
-#mkdir("output_$i")
-for jj = 1:length(problems)
-    if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-             push!(out,ones(length(tpoints[jj])))
-    else   
-        sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-        #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][2]
-        push!(out,arr)
-    end
-end
-
-plts = []
-count = 0
-gr(label="",grid=:on)
-for j in unique_experiment
-    count+=1
-    @show count
-    if count ∈ [1,3,4,5,6,7]
-        p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
-        push!(plts,p1)
-    end
-end
-display(plot(plts...,layout=(6,1),size=(500,1000)))
-savefig("mig1_midpoint_$(i)_check.png")
-
-out_s=[]
-out_m=[]
-out=[]
-#mkdir("output_$i")
-for jj = 1:length(problems)
-    if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-             push!(out,ones(length(tpoints[jj])))
-    else   
-        sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-        #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][3]
-        push!(out,arr)
-    end
-end
-
-plts = []
-count = 0
-gr(label="",grid=:on)
-for j in unique_experiment
-    count+=1
-    @show count
-    if count ∈ [1,3,4,5,6,7]
-        p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
-        push!(plts,p1)
-    end
-end
-display(plot(plts...,layout=(6,1),size=(500,1000)))
-savefig("mig2_midpoint_$(i)_check.png")
-
-out_s=[]
-out_m=[]
-out=[]
-#mkdir("output_$i")
-for jj = 1:length(problems)
-    if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-             push!(out,ones(length(tpoints[jj])))
-    else   
-        sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-        #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][4]
-        push!(out,arr)
-    end
-end
-
-plts = []
-count = 0
-gr(label="",grid=:on)
-for j in unique_experiment
-    count+=1
-    @show count
-    if count ∈ [1,3,4,5,6,7]
-        p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
-        push!(plts,p1)
-    end
-end
-display(plot(plts...,layout=(6,1),size=(500,1000)))
-savefig("mth1_midpoint_$(i)_check.png")
-
-out_s=[]
-out_m=[]
-out=[]
-#mkdir("output_$i")
-for jj = 1:length(problems)
-    if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
-             push!(out,ones(length(tpoints[jj])))
-    else   
-        sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
-        #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
-        arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][5]
-        push!(out,arr)
-    end
-end
-
-plts = []
-count = 0
-gr(label="",grid=:on)
-for j in unique_experiment
-    count+=1
-    @show count
-    if count ∈ [1,3,4,5,6,7]
-        p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
-        push!(plts,p1)
-    end
-end
-display(plot(plts...,layout=(6,1),size=(500,1000)))
-savefig("std1_midpoint_$(i)_check.png")
 
 
-plot(tpoints[1],int_glucose_interp[1](tpoints[1]))
-plot!(tpoints[2],int_glucose_interp[2](tpoints[2]))
-plot!(tpoints[3],int_glucose_interp[3](tpoints[3]))
-plot!(tpoints[4],int_glucose_interp[4](tpoints[4]))
-plot!(tpoints[5],int_glucose_interp[5](tpoints[5]))
-plot!(tpoints[6],int_glucose_interp[6](tpoints[6]),yscale=:linear)
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("WT")
-savefig("int_g_wt.png")
-
-plot(tpoints[7],int_glucose_interp[7](tpoints[7]))
-plot!(tpoints[8],int_glucose_interp[8](tpoints[8]))
-plot!(tpoints[9],int_glucose_interp[9](tpoints[9]),yscale=:log10,ylims=(10^-8,10^0))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("mig1 delta")
-savefig("int_g_mig1.png")
+# plot(tpoints[1],int_glucose_interp[1](tpoints[1]))
+# plot!(tpoints[2],int_glucose_interp[2](tpoints[2]))
+# plot!(tpoints[3],int_glucose_interp[3](tpoints[3]))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("WT")
 
 
-plot(tpoints[10],int_glucose_interp[10](tpoints[10]))
-plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
-plot!(tpoints[12],int_glucose_interp[12](tpoints[12]),yscale=:log10,ylims=(10^-8,10^0))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("mth1 delta")
-savefig("int_g_mth1.png")
+# plot(tpoints[10],int_glucose_interp[10](tpoints[10]))
+# plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
+# plot!(tpoints[12],int_glucose_interp[12](tpoints[12]),yscale=:log10)
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("mth1")
 
-plot(tpoints[13],int_glucose_interp[13](tpoints[13]))
-plot!(tpoints[14],int_glucose_interp[14](tpoints[14]))
-plot!(tpoints[15],int_glucose_interp[15](tpoints[15]),yscale=:log10,ylims=(10^-8,10^0))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("rgt2 delta")
-savefig("int_g_rgt2.png")
+# plot(tpoints[13],int_glucose_interp[13](tpoints[13]))
+# plot!(tpoints[14],int_glucose_interp[14](tpoints[14]))
+# plot!(tpoints[15],int_glucose_interp[15](tpoints[15]))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("rgt2")
 
+# plot(tpoints[10],glucose_interp[10](tpoints[10]))
+# plot!(tpoints[10],int_glucose_interp[10](tpoints[10]))
 
-plot(tpoints[16],int_glucose_interp[16](tpoints[16]))
-plot!(tpoints[17],int_glucose_interp[17](tpoints[17]))
-plot!(tpoints[18],int_glucose_interp[18](tpoints[18]),yscale=:log10,ylims=(10^-8,10^0))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("snf3 delta")
-savefig("int_g_snf3.png")
+# plot(tpoints[11],glucose_interp[11](tpoints[11]))
+# plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
 
-plot(tpoints[19],int_glucose_interp[19](tpoints[19]))
-plot!(tpoints[20],int_glucose_interp[20](tpoints[20]))
-plot!(tpoints[21],int_glucose_interp[21](tpoints[21]),yscale=:log10,ylims=(10^-8,10^0))
-ylabel!("int glucose")
-xlabel!("time (hr)")
-title!("std1 delta")
-savefig("int_g_std1.png")
+# pars = readdlm("int_g_midpoint_parameters_769.txt")
 
+# pars = 10 .^ pars
 
-plot(tpoints[1],glucose_interp[1](tpoints[1]),label="")
-plot!(tpoints[2],glucose_interp[2](tpoints[2]),label="")
-plot!(tpoints[3],glucose_interp[3](tpoints[3]),label="")
-plot!(tpoints[4],glucose_interp[4](tpoints[4]),label="")
-plot!(tpoints[5],glucose_interp[5](tpoints[5]),label="")
-plot!(tpoints[6],glucose_interp[6](tpoints[6]),yscale=:linear,label="",xticks=0:2.5:tpoints[6][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("WT")
-savefig("ext_g_wt.png")
+# problems =[]
+# glucose_interp = []
+# int_glucose_interp = []
+# count = 0
+# for h in unique(data[!,:strain])[1:6]
+#     for g in unique(data[!,:experiment_type])
+#         temp_data1 = data[coalesce.(data.signal_type .== "fluorescence" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
+#         temp_data3 = data[coalesce.(data.signal_type .== "glucose_proxy" .&& data.strain .== h .&& data.experiment_type .== g, false), [1,3,5]]
+#         if !isempty(temp_data3)
+#             temp_data4 = temp_data1[!, [1,3]]
+#             temp_data6 = temp_data3[!, [1,3]]
+#             times = temp_data3[!,:time]
+#             fluor = temp_data4[!,:signal_value]
+#             count = count + 1
+#             if minimum(times) !== 0.0
+#                 glucose = LinearInterpolation(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),extrapolation_bc=Line()) #some glucose time series miss out the first time point/value! this is my hack
+#                 int_glucose = intracellular_glucose(vcat(0.0,times),vcat(0.0,temp_data6[1:length(times),:signal_value]),pars[48 + count])
+#                 push!(glucose_interp,glucose)
+#                 push!(int_glucose_interp,int_glucose)
+#             else
+#                 glucose = LinearInterpolation(times,temp_data6[1:length(times),:signal_value],extrapolation_bc=Line())
+#                 int_glucose = intracellular_glucose(times,temp_data6[1:length(times),:signal_value],pars[48 + count])
+#                 push!(glucose_interp,glucose)
+#                 push!(int_glucose_interp,int_glucose)
+#             end
 
-plot(tpoints[7],glucose_interp[7](tpoints[7]),label="")
-plot!(tpoints[8],glucose_interp[8](tpoints[8]),label="")
-plot!(tpoints[9],glucose_interp[9](tpoints[9]),yscale=:linear,label="",xticks=0:2.5:tpoints[9][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("mig1 delta")
-savefig("ext_g_mig1.png")
-
-
-plot(tpoints[10],glucose_interp[10](tpoints[10]),label="")
-plot!(tpoints[11],glucose_interp[11](tpoints[11]),label="")
-plot!(tpoints[12],glucose_interp[12](tpoints[12]),yscale=:linear,label="",xticks=0:2.5:tpoints[12][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("mth1 delta")
-savefig("ext_g_mth1.png")
-
-plot(tpoints[13],glucose_interp[13](tpoints[13]),label="")
-plot!(tpoints[14],glucose_interp[14](tpoints[14]),label="")
-plot!(tpoints[15],glucose_interp[15](tpoints[15]),yscale=:linear,label="",xticks=0:2.5:tpoints[15][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("rgt2 delta")
-savefig("ext_g_rgt2.png")
+#             if h =="HXT4_GFP"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], wt))
+#             elseif h == "HXT4_GFP_snf3_delta"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], snf3ko))
+#             elseif h == "HXT4_GFP_rgt2_delta"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], rgt2ko))
+#             elseif h == "HXT4_GFP_std1_delta"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], std1ko))
+#             elseif h == "HXT4_GFP_mig1_delta"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mig1ko))
+#             elseif h == "HXT4_GFP_mth1_delta"
+#                 push!(problems,makeproblem1(int_glucose,glucose, (minimum(times),maximum(times)), fluor[1], mth1ko))
+#             end
+#         end
+#     end
+# end
 
 
-plot(tpoints[16],glucose_interp[16](tpoints[16]),label="")
-plot!(tpoints[17],glucose_interp[17](tpoints[17]),label="")
-plot!(tpoints[18],glucose_interp[18](tpoints[18]),yscale=:linear,label="",xticks=0:2.5:tpoints[18][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("snf3 delta")
-savefig("ext_g_snf3.png")
+# using Plots
+# out_s=[]
+# out_m=[]
+# out=[]
+# #mkdir("output_$i")
+# for jj = 1:length(problems)
+#     if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#              push!(out,ones(length(tpoints[jj])))
+#     else   
+#         sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][1]
+#         push!(out,arr)
+#     end
+# end
 
-plot(tpoints[19],glucose_interp[19](tpoints[19]),label="")
-plot!(tpoints[20],glucose_interp[20](tpoints[20]),label="")
-plot!(tpoints[21],glucose_interp[21](tpoints[21]),yscale=:linear,label="",xticks=0:2.5:tpoints[21][end])
-ylabel!("ext glucose")
-xlabel!("time (hr)")
-title!("std1 delta")
-savefig("ext_g_std1.png")
+# plts = []
+# count = 0
+# gr(label="",grid=:on)
+# ys =[(0,4.5),(0,3.5),(0,15),(0,10),(0,3.5),(0,3),(0,4.5)]
+# for j in unique_experiment
+#     count+=1
+#     @show count
+#     if count ∈ [1,3,4,5,6,7]
+#         p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linewidth=3.0)
+#         plot(p1,Plots.plot!(tpoints[1+(count-1)*3:3 .+ (count-1)*3],fluorescence[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",ylims=ys[count],linestyle=:dashdot))
+#         push!(plts,p1)
+#     end
+# end
+# display(plot(plts...,layout=(6,1),size=(500,1000)))
+# savefig("HXT4_midpoint_$(i)_check.png")
+
+
+# out_s=[]
+# out_m=[]
+# out=[]
+# #mkdir("output_$i")
+# for jj = 1:length(problems)
+#     if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#              push!(out,ones(length(tpoints[jj])))
+#     else   
+#         sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
+#         #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][2]
+#         push!(out,arr)
+#     end
+# end
+
+# plts = []
+# count = 0
+# gr(label="",grid=:on)
+# for j in unique_experiment
+#     count+=1
+#     @show count
+#     if count ∈ [1,3,4,5,6,7]
+#         p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
+#         push!(plts,p1)
+#     end
+# end
+# display(plot(plts...,layout=(6,1),size=(500,1000)))
+# savefig("mig1_midpoint_$(i)_check.png")
+
+# out_s=[]
+# out_m=[]
+# out=[]
+# #mkdir("output_$i")
+# for jj = 1:length(problems)
+#     if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#              push!(out,ones(length(tpoints[jj])))
+#     else   
+#         sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
+#         #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][3]
+#         push!(out,arr)
+#     end
+# end
+
+# plts = []
+# count = 0
+# gr(label="",grid=:on)
+# for j in unique_experiment
+#     count+=1
+#     @show count
+#     if count ∈ [1,3,4,5,6,7]
+#         p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
+#         push!(plts,p1)
+#     end
+# end
+# display(plot(plts...,layout=(6,1),size=(500,1000)))
+# savefig("mig2_midpoint_$(i)_check.png")
+
+# out_s=[]
+# out_m=[]
+# out=[]
+# #mkdir("output_$i")
+# for jj = 1:length(problems)
+#     if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#              push!(out,ones(length(tpoints[jj])))
+#     else   
+#         sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
+#         #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][4]
+#         push!(out,arr)
+#     end
+# end
+
+# plts = []
+# count = 0
+# gr(label="",grid=:on)
+# for j in unique_experiment
+#     count+=1
+#     @show count
+#     if count ∈ [1,3,4,5,6,7]
+#         p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
+#         push!(plts,p1)
+#     end
+# end
+# display(plot(plts...,layout=(6,1),size=(500,1000)))
+# savefig("mth1_midpoint_$(i)_check.png")
+
+# out_s=[]
+# out_m=[]
+# out=[]
+# #mkdir("output_$i")
+# for jj = 1:length(problems)
+#     if names[jj] ∈ ["HXT4_GFP_step_glucose_0p01_percent","HXT4_GFP_step_glucose_0p1_percent","HXT4_GFP_step_glucose_1p0_percent"]
+#              push!(out,ones(length(tpoints[jj])))
+#     else   
+#         sol = solve(problems[jj](pars[1:48]), TRBDF2(), saveat = tpoints[jj],tstops=tpoints[jj], verbose = false, abstol = 1e-6, reltol = 1e-6, dtmin = 1e-12,maxiters=1e6)
+#         #sol = solve(problems[jj](pars[1:48]), lsoda(), saveat = tpoints[jj], verbose = false, abstol = 1e-12, reltol = 1e-12, dtmin = 1e-12,maxiters=1e6)
+#         arr = [[j[i] for j in sol.u] for i = 1:length(sol.u[1])][5]
+#         push!(out,arr)
+#     end
+# end
+
+# plts = []
+# count = 0
+# gr(label="",grid=:on)
+# for j in unique_experiment
+#     count+=1
+#     @show count
+#     if count ∈ [1,3,4,5,6,7]
+#         p1 = Plots.plot(tpoints[1+(count-1)*3:3+(count-1)*3],out[1+(count-1)*3:3 .+ (count-1)*3],title=unique_experiment[count],xlabel="time (hours)",linewidth=3.0)
+#         push!(plts,p1)
+#     end
+# end
+# display(plot(plts...,layout=(6,1),size=(500,1000)))
+# savefig("std1_midpoint_$(i)_check.png")
+
+
+# plot(tpoints[1],int_glucose_interp[1](tpoints[1]))
+# plot!(tpoints[2],int_glucose_interp[2](tpoints[2]))
+# plot!(tpoints[3],int_glucose_interp[3](tpoints[3]))
+# plot!(tpoints[4],int_glucose_interp[4](tpoints[4]))
+# plot!(tpoints[5],int_glucose_interp[5](tpoints[5]))
+# plot!(tpoints[6],int_glucose_interp[6](tpoints[6]),yscale=:linear)
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("WT")
+# savefig("int_g_wt.png")
+
+# plot(tpoints[7],int_glucose_interp[7](tpoints[7]))
+# plot!(tpoints[8],int_glucose_interp[8](tpoints[8]))
+# plot!(tpoints[9],int_glucose_interp[9](tpoints[9]),yscale=:log10,ylims=(10^-8,10^0))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("mig1 delta")
+# savefig("int_g_mig1.png")
+
+
+# plot(tpoints[10],int_glucose_interp[10](tpoints[10]))
+# plot!(tpoints[11],int_glucose_interp[11](tpoints[11]))
+# plot!(tpoints[12],int_glucose_interp[12](tpoints[12]),yscale=:log10,ylims=(10^-8,10^0))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("mth1 delta")
+# savefig("int_g_mth1.png")
+
+# plot(tpoints[13],int_glucose_interp[13](tpoints[13]))
+# plot!(tpoints[14],int_glucose_interp[14](tpoints[14]))
+# plot!(tpoints[15],int_glucose_interp[15](tpoints[15]),yscale=:log10,ylims=(10^-8,10^0))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("rgt2 delta")
+# savefig("int_g_rgt2.png")
+
+
+# plot(tpoints[16],int_glucose_interp[16](tpoints[16]))
+# plot!(tpoints[17],int_glucose_interp[17](tpoints[17]))
+# plot!(tpoints[18],int_glucose_interp[18](tpoints[18]),yscale=:log10,ylims=(10^-8,10^0))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("snf3 delta")
+# savefig("int_g_snf3.png")
+
+# plot(tpoints[19],int_glucose_interp[19](tpoints[19]))
+# plot!(tpoints[20],int_glucose_interp[20](tpoints[20]))
+# plot!(tpoints[21],int_glucose_interp[21](tpoints[21]),yscale=:log10,ylims=(10^-8,10^0))
+# ylabel!("int glucose")
+# xlabel!("time (hr)")
+# title!("std1 delta")
+# savefig("int_g_std1.png")
+
+
+# plot(tpoints[1],glucose_interp[1](tpoints[1]),label="")
+# plot!(tpoints[2],glucose_interp[2](tpoints[2]),label="")
+# plot!(tpoints[3],glucose_interp[3](tpoints[3]),label="")
+# plot!(tpoints[4],glucose_interp[4](tpoints[4]),label="")
+# plot!(tpoints[5],glucose_interp[5](tpoints[5]),label="")
+# plot!(tpoints[6],glucose_interp[6](tpoints[6]),yscale=:linear,label="",xticks=0:2.5:tpoints[6][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("WT")
+# savefig("ext_g_wt.png")
+
+# plot(tpoints[7],glucose_interp[7](tpoints[7]),label="")
+# plot!(tpoints[8],glucose_interp[8](tpoints[8]),label="")
+# plot!(tpoints[9],glucose_interp[9](tpoints[9]),yscale=:linear,label="",xticks=0:2.5:tpoints[9][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("mig1 delta")
+# savefig("ext_g_mig1.png")
+
+
+# plot(tpoints[10],glucose_interp[10](tpoints[10]),label="")
+# plot!(tpoints[11],glucose_interp[11](tpoints[11]),label="")
+# plot!(tpoints[12],glucose_interp[12](tpoints[12]),yscale=:linear,label="",xticks=0:2.5:tpoints[12][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("mth1 delta")
+# savefig("ext_g_mth1.png")
+
+# plot(tpoints[13],glucose_interp[13](tpoints[13]),label="")
+# plot!(tpoints[14],glucose_interp[14](tpoints[14]),label="")
+# plot!(tpoints[15],glucose_interp[15](tpoints[15]),yscale=:linear,label="",xticks=0:2.5:tpoints[15][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("rgt2 delta")
+# savefig("ext_g_rgt2.png")
+
+
+# plot(tpoints[16],glucose_interp[16](tpoints[16]),label="")
+# plot!(tpoints[17],glucose_interp[17](tpoints[17]),label="")
+# plot!(tpoints[18],glucose_interp[18](tpoints[18]),yscale=:linear,label="",xticks=0:2.5:tpoints[18][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("snf3 delta")
+# savefig("ext_g_snf3.png")
+
+# plot(tpoints[19],glucose_interp[19](tpoints[19]),label="")
+# plot!(tpoints[20],glucose_interp[20](tpoints[20]),label="")
+# plot!(tpoints[21],glucose_interp[21](tpoints[21]),yscale=:linear,label="",xticks=0:2.5:tpoints[21][end])
+# ylabel!("ext glucose")
+# xlabel!("time (hr)")
+# title!("std1 delta")
+# savefig("ext_g_std1.png")
 
 
 parameter_names = [
@@ -1061,61 +1061,362 @@ parameter_names = [
     "r19", "r20", "r21"
 ]
 
-p = readdlm("int_g_midpoint_parameters_846.txt")[:,1]
+p = readdlm("potential_particles/int_g_midpoint_parameters_955.txt")[:,1]
+@time rho_lens(p)
 using GlobalSensitivity
 using QuasiMonteCarlo
 using Plots
-lb = [custombounds101[i][1] for i in 1:69]
-ub = [custombounds101[i][2] for i in 1:69]
-samples = 100000
-sampler_choice = SobolSample()
-A,B = QuasiMonteCarlo.generate_design_matrices(samples,lb,ub,sampler_choice)
-@time sobol_sens = gsa(rho_batch, Sobol(order=[0,1,2]), A,B,batch=true)
-# @time eFAST_sens = gsa(rho_batch, eFAST(),[[lb[i],ub[i]] for i in 1:47],samples=samples,batch=true)
-# Create the bar plot
-bar(sobol_sens.S1, 
-    ylabel = "Sobol First order", 
-    label = "", 
-    xlabel = "parameters", 
-    xticks=(1:length(parameter_names), parameter_names),
-    xrotation=90,
-    xtickfont=font(10),size=(1200,500))
-savefig("first_sobol_sensitivity_global.png")
-bar(sobol_sens.ST, 
-    ylabel = "Sobol Total order", 
-    label = "", 
-    xlabel = "parameters", 
-    xticks=(1:length(parameter_names), parameter_names),
-    xrotation=90,
-    xtickfont=font(10),size=(1200,500))
-savefig("total_sobol_sensitivity_global.png")
-heatmap(sobol_sens.S2, ylabel = "parameters",label="",xlabel="parameters",title="Sobol Second Order")
-savefig("second_sobol_sensitivity_global.png")
+# lb = [custombounds101[i][1] for i in 1:69]
+# ub = [custombounds101[i][2] for i in 1:69]
+# samples = 1000
+# sampler_choice = SobolSample()
+# A,B = QuasiMonteCarlo.generate_design_matrices(samples,lb,ub,sampler_choice)
+# @time sobol_sens = gsa(rho_batch, Sobol(order=[0,1,2]), A,B,batch=true)
+# # @time eFAST_sens = gsa(rho_batch, eFAST(),[[lb[i],ub[i]] for i in 1:47],samples=samples,batch=true)
+# # Create the bar plot
+# bar(sobol_sens.S1, 
+#     ylabel = "Sobol First order", 
+#     label = "", 
+#     xlabel = "parameters", 
+#     xticks=(1:length(parameter_names), parameter_names),
+#     xrotation=90,
+#     xtickfont=font(10),size=(1200,500))
+# savefig("first_sobol_sensitivity_global.png")
+# bar(sobol_sens.ST, 
+#     ylabel = "Sobol Total order", 
+#     label = "", 
+#     xlabel = "parameters", 
+#     xticks=(1:length(parameter_names), parameter_names),
+#     xrotation=90,
+#     xtickfont=font(10),size=(1200,500))
+# savefig("total_sobol_sensitivity_global.png")
+# heatmap(sobol_sens.S2, ylabel = "parameters",label="",xlabel="parameters",title="Sobol Second Order")
+# savefig("second_sobol_sensitivity_global.png")
 
-lb = [max(p[i]-0.1,custombounds101[i][1]) for i in 1:69]
-ub = [min(p[i]+0.1,custombounds101[i][2]) for i in 1:69]
-samples = 100000
-sampler_choice = SobolSample()
-A,B = QuasiMonteCarlo.generate_design_matrices(samples,lb,ub,sampler_choice)
-@time sobol_sens2 = gsa(rho_batch, Sobol(order=[0,1,2]), A,B,batch=true)
-#@time eFAST_sens2 = gsa(rho_batch, eFAST(),[[lb[i],ub[i]] for i in 1:47],samples=samples,batch=true)
+# Define the range of values you want to iterate over (logarithmic scale)
+using DelimitedFiles
+values = 10 .^ range(-5, stop=-1, length=3)
+using Measures
 
-bar(sobol_sens2.S1, 
-    ylabel = "Sobol First order", 
-    label = "", 
-    xlabel = "parameters", 
-    xticks=(1:length(parameter_names), parameter_names),
-    xrotation=90,
-    xtickfont=font(10),size=(1200,500))
-savefig("extended_first_sobol_sensitivity_around_particle_846.png")
+# # Loop over each value
+# for v in values
+#     # Update the bounds using the current value of `v`
+#     lb = [max(p[i] - v, custombounds101[i][1]) for i in 1:69]
+#     ub = [min(p[i] + v, custombounds101[i][2]) for i in 1:69]
+#     samples = 1000
+#     sampler_choice = SobolSample()
+    
+#     # Generate design matrices using the new bounds
+#     A, B = QuasiMonteCarlo.generate_design_matrices(samples, lb, ub, sampler_choice)
+    
+#     # Perform Sobol sensitivity analysis
+#     @time sobol_sens2 = gsa(rho_batch, Sobol(order=[0,1,2]), A, B, batch=true)
+    
+#     # Save sensitivity indices to files
+#     writedlm("first_order_sensitivity_value_$v.csv", 
+#              hcat(parameter_names, sobol_sens2.S1), 
+#              ',')
+    
+#     writedlm("total_order_sensitivity_value_$v.csv", 
+#              hcat(parameter_names, sobol_sens2.ST), 
+#              ',')
+             
+#     # For S2 (second order), create a matrix with row and column headers
+#     s2_with_headers = vcat(
+#         reshape([""] ∪ parameter_names, 1, :),
+#         hcat(parameter_names, sobol_sens2.S2)
+#     )
+#     writedlm("second_order_sensitivity_value_$v.csv", 
+#              s2_with_headers, 
+#              ',')
+    
+#     # Plot and save Sobol First Order sensitivity
+#     bar(sobol_sens2.S1,
+#         ylabel = "Sobol First order",
+#         label = "",
+#         xlabel = "parameters",
+#         xticks = (1:length(parameter_names), parameter_names),
+#         xrotation = 90,
+#         xtickfont = font(10),
+#         size = (1200, 500),
+#         left_margin = 20mm, right_margin = 20mm, top_margin = 10mm, bottom_margin = 10mm)
+#     savefig("extended_first_sobol_sensitivity_value_$v.png")
+    
+#     # Plot and save Sobol Total Order sensitivity
+#     bar(sobol_sens2.ST,
+#         ylabel = "Sobol Total order",
+#         label = "",
+#         xlabel = "parameters",
+#         xticks = (1:length(parameter_names), parameter_names),
+#         xrotation = 90,
+#         xtickfont = font(10),
+#         size = (1200, 500),
+#         left_margin = 20mm, right_margin = 20mm, top_margin = 10mm, bottom_margin = 10mm)
+#     savefig("extended_total_sobol_sensitivity_value_$v.png")
+    
+#     # Plot and save Sobol Second Order sensitivity heatmap
+#     heatmap(sobol_sens2.S2,
+#         ylabel = "parameters",
+#         label = "",
+#         xlabel = "parameters",
+#         title = "Sobol Second Order",
+#         size = (1200, 500),
+#         left_margin = 20mm, right_margin = 20mm, top_margin = 10mm, bottom_margin = 10mm)
+#     savefig("second_sobol_sensitivity_global_value_$v.png")
+# end
 
-bar(sobol_sens2.ST, 
-    ylabel = "Sobol Total order", 
-    label = "", 
-    xlabel = "parameters", 
-    xticks=(1:length(parameter_names), parameter_names),
-    xrotation=90,
-    xtickfont=font(10),size=(1200,500))
-    savefig("extended_total_sobol_sensitivity_around_particle_846.png")
-heatmap(sobol_sens2.S2, ylabel = "parameters",label="",xlabel="parameters",title="Sobol Second Order")
-savefig("second_sobol_sensitivity_global_particles_846.png")
+parameter_names = [
+    "k3", "thk", "ksnf1", "ksnf1std1", "nsnf1", "nsnf2", "dmth1", 
+    "nmth1snf3", "nmth1rgt2", "thsnf3", "dmth1rgt2", "thmth1", 
+    "kmth1mig1", "nmth1mig1", "kmth1mig2", "nmth1mig2", "thstd1", 
+    "istd1", "nstd1", "nstd3", "thrgt2", "imig1", "kmig1snf1", 
+    "theta2", "dmig2", "kmig2std1", "nmig2std1", "kmig2mth1", 
+    "nmig2mth1", "dhxt4", "dhxt4max", "kdhxt4", "ndhxt4", "shxt4", 
+    "khxt4mth1", "nhxt4mth1", "khxt4std1", "nhxt4std1", "khxt4mig1", 
+    "khxt4mig2", "nhxt4mig1", "nhxt4mig2", "estd1max3", "ell", 
+    "thmig2", "smig2", "kdmig2", "mdmig2", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8", 
+    "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r16", "r17", "r18", 
+    "r19", "r20", "r21"
+]
+
+transdict = {
+    "Snf1tot": "snf1tot",
+    "nsnf2": "msnf1",
+    "ndhxt4": "mdhxt4",
+    "emig1max": "emig1",
+    "nmth1snf3": "mmth1snf3",
+    "nmth1rgt2": "mmth1rgt2",
+    "estd1max3": "estd1snf3",
+    "nstd3": "mstd1snf3",
+    "estd1max2": "estd1rgt2",
+    "nstd1": "mstd1rgt2",
+    "dhxt4max": "dhxt4g",
+}
+
+using DelimitedFiles
+values = 10 .^ range(-5, stop=-1, length=3)
+using Measures
+
+# Loop over each value
+for v in values[2:3]
+    # Update the bounds using the current value of `v`
+    lb = [max(p[i] - v, custombounds101[i][1]) for i in 1:69]
+    ub = [min(p[i] + v, custombounds101[i][2]) for i in 1:69]
+    samples = 100000
+    
+    # Prepare bounds for eFAST (now using all 69 parameters)
+    efast_bounds = [[lb[i],ub[i]] for i in 1:69]
+    
+    # Perform eFAST sensitivity analysis
+    @time eFAST_sens = gsa(rho_batch, eFAST(), efast_bounds, samples=samples, batch=true)
+    
+    # Save eFAST sensitivity indices to files
+    writedlm("efast_first_order_sensitivity_value_$v.csv", 
+             hcat(parameter_names, eFAST_sens.S1[1,:]), 
+             ',')
+    
+    writedlm("efast_total_order_sensitivity_value_$v.csv", 
+             hcat(parameter_names, eFAST_sens.ST[1,:]), 
+             ',')
+    
+    # Plot eFAST First Order sensitivity
+    bar(eFAST_sens.S1[1,:],
+        ylabel = "eFAST First order",
+        label = "",
+        xlabel = "parameters",
+        xticks = (1:length(parameter_names), parameter_names),
+        xrotation = 90,
+        xtickfont = font(10),
+        size = (1200, 500),
+        left_margin = 20mm, right_margin = 20mm, top_margin = 10mm, bottom_margin = 10mm)
+    savefig("extended_first_efast_sensitivity_value_$v.png")
+    
+    # Plot eFAST Total Order sensitivity
+    bar(eFAST_sens.ST[1,:],
+        ylabel = "eFAST Total order",
+        label = "",
+        xlabel = "parameters",
+        xticks = (1:length(parameter_names), parameter_names),
+        xrotation = 90,
+        xtickfont = font(10),
+        size = (1200, 500),
+        left_margin = 20mm, right_margin = 20mm, top_margin = 10mm, bottom_margin = 10mm)
+    savefig("extended_total_efast_sensitivity_value_$v.png")
+end
+
+
+using DelimitedFiles
+values = 10 .^ range(-1, stop=0, length=3)
+using Measures
+
+# Loop over each value
+for v in values
+    # Update the bounds using the current value of `v`
+    lb = [max(p[i] - v, custombounds101[i][1]) for i in 1:69]
+    ub = [min(p[i] + v, custombounds101[i][2]) for i in 1:69]
+    scatter(p,label="particle 55")
+    scatter!(lb,label="window lower bound")
+    scatter!(ub,label="window upper bound")
+    plot!([custombounds101[i][1] for i in 1:69],label="prior upper bound")
+    plot!([custombounds101[i][2] for i in 1:69],label="upper upper bound")
+    savefig("new_windows_bounds_$v.png")
+end
+
+using DelimitedFiles
+using Plots
+using Measures
+
+# Define parameter names and translation dictionary
+parameter_names = [
+    "k3", "thk", "ksnf1", "ksnf1std1", "nsnf1", "nsnf2", "dmth1",
+    "nmth1snf3", "nmth1rgt2", "thsnf3", "dmth1rgt2", "thmth1",
+    "kmth1mig1", "nmth1mig1", "kmth1mig2", "nmth1mig2", "thstd1",
+    "istd1", "nstd1", "nstd3", "thrgt2", "imig1", "kmig1snf1",
+    "theta2", "dmig2", "kmig2std1", "nmig2std1", "kmig2mth1",
+    "nmig2mth1", "dhxt4", "dhxt4max", "kdhxt4", "ndhxt4", "shxt4",
+    "khxt4mth1", "nhxt4mth1", "khxt4std1", "nhxt4std1", "khxt4mig1",
+    "khxt4mig2", "nhxt4mig1", "nhxt4mig2", "estd1max3", "ell",
+    "thmig2", "smig2", "kdmig2", "mdmig2", "r1", "r2", "r3", "r4", "r5", "r6", "r7", "r8",
+    "r9", "r10", "r11", "r12", "r13", "r14", "r15", "r16", "r17", "r18",
+    "r19", "r20", "r21"
+]
+
+transdict = Dict(
+    "Snf1tot" => "snf1tot",
+    "nsnf2" => "msnf1",
+    "ndhxt4" => "mdhxt4",
+    "emig1max" => "emig1",
+    "nmth1snf3" => "mmth1snf3",
+    "nmth1rgt2" => "mmth1rgt2",
+    "estd1max3" => "estd1snf3",
+    "nstd3" => "mstd1snf3",
+    "estd1max2" => "estd1rgt2",
+    "nstd1" => "mstd1rgt2",
+    "dhxt4max" => "dhxt4g"
+)
+
+# Values used in previous analysis
+values = 10 .^ range(-5, stop=-1, length=3)
+
+# Function to swap parameter names
+function swap_parameter_names!(names, transdict)
+    for (i, name) in enumerate(names)
+        names[i] = get(transdict, name, name)
+    end
+    return names
+end
+
+# Create a combined figure
+p = plot(layout = (2, 3), size = (2400, 1000), 
+         left_margin = 20mm, right_margin = 20mm, 
+         top_margin = 10mm, bottom_margin = 10mm, grid=false)
+
+# Loop through the two sensitivity types and values
+for (j, sens_type) in enumerate(["first_order", "total_order"])
+    for (i, v) in enumerate(values)
+        # Read the CSV files
+        filename = "efast_$(sens_type)_sensitivity_value_$v.csv"
+        data = readdlm(filename, ',', header=false)
+        
+        # Extract parameter names and sensitivity values
+        names = data[:, 1]
+        values_sens = data[:, 2]
+        
+        # Swap parameter names
+        swap_parameter_names!(names, transdict)
+        
+        # Create subplot
+        subplot_index = (j-1)*3 + i
+        bar!(p[subplot_index], 
+             1:length(names), 
+             values_sens,
+             ylabel = "eFAST $(uppercasefirst(replace(sens_type, "_" => " "))) Sensitivity",             title = "Window Size = $v",
+             label = "",
+             xlabel = "Parameters",
+             xticks = (1:length(names), names),
+             xrotation = 90,
+             xtickfont = font(8),
+             bottom_margin = 20mm)
+    end
+end
+
+# Save the combined figure
+savefig(p, "panel_view_efast_sensitivity.png")
+savefig(p, "panel_view_efast_sensitivity.svg")
+
+using DelimitedFiles
+using Plots
+using Measures
+
+
+# Values used in previous analysis
+values = 10 .^ range(-5, stop=-1, length=3)
+
+# Function to swap parameter names
+function swap_parameter_names!(names, transdict)
+    for (i, name) in enumerate(names)
+        names[i] = get(transdict, name, name)
+    end
+    return names
+end
+
+# Prepare data for grouped bar plot
+function prepare_sensitivity_data(sens_type)
+    all_data = []
+    all_names = []
+    
+    for v in values
+        filename = "efast_$(sens_type)_sensitivity_value_$v.csv"
+        data = readdlm(filename, ',', header=false)
+        
+        names = data[:, 1]
+        values_sens = data[:, 2]
+        
+        swap_parameter_names!(names, transdict)
+        
+        push!(all_data, values_sens)
+        if isempty(all_names)
+            all_names = names
+        end
+    end
+    
+    return all_names, all_data
+end
+
+# Create a figure with two subplots
+p = plot(layout=(2, 1), size=(1500, 800),
+         left_margin=10mm, right_margin=10mm, 
+         top_margin=10mm, bottom_margin=20mm,xtickfontsize=12,ytickfontsize=12,guidefontsize=12,legendfontsize=14,grid=false) # Add extra space below the plots
+
+# Add jittered bars
+function staggered_bar_plot!(ax, names, data, sens_type)
+    num_groups = length(data)
+    group_offsets = range(-0.25, stop=0.25, length=num_groups) # Adjust jitter range
+    x_positions = 1:length(names)
+
+    for i in 1:num_groups
+        jittered_positions = x_positions .+ group_offsets[i]
+        bar!(ax, jittered_positions, data[i], bar_width=0.2, label="Window Size $(values[i])")
+    end
+
+    plot!(ax, 
+          title="$(uppercasefirst(replace(sens_type, "_" => " "))) Sensitivity",
+          ylabel="eFAST $(uppercasefirst(replace(sens_type, "_" => " "))) Sensitivity",
+          xlabel="Parameters",
+          xticks=(x_positions, names),
+          xrotation=90,
+          legend=:topright, # Place legend at the top-right
+          foreground_color_legend = nothing) # Remove the box around the legend
+end
+
+# Plot for first-order and total-order sensitivities
+for (i, sens_type) in enumerate(["first_order", "total_order"])
+    names, data = prepare_sensitivity_data(sens_type)
+    staggered_bar_plot!(p[i], names, data, sens_type)
+end
+
+# Save the combined figure
+savefig(p, "staggered_efast_sensitivity.png")
+savefig(p, "staggered_efast_sensitivity.svg")
+
+
