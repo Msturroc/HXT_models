@@ -22,5 +22,5 @@ This repository contains code in both Julia and Python to:
 
 1.  The model, its development, and biological validation are detailed in the following publication<sup>1</sup>:
 
-    Montaño-Gutierrez, L. F., Sturrock, M., Farquhar, I. L., Correia, K., Shahrezaei, V., & Swain, P. S. (2024). *A push-pull system of repressors matches levels of glucose transporters to extracellular glucose in budding yeast*. (Preprint/Published Paper - *Note: Add full citation details once available*)
+    Montaño-Gutierrez, L. F., Sturrock, M., Farquhar, I. L., Correia, K., Shahrezaei, V., & Swain, P. S. (2024). *A push-pull system of repressors matches levels of glucose transporters to extracellular glucose in budding yeast*. (preprint)
 
